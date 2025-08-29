@@ -7,6 +7,8 @@ async function generate(req, res) {
   try {
     const user = req.user; // set by firebaseAuth
     const body = req.body;
+    const idAiEnabled = body.isAiEnabled
+    let data = []
 
     // Check free limit
     const subscription = await user.getSubscription?.(); // if you implement eager association
@@ -19,17 +21,39 @@ async function generate(req, res) {
       });
     }
 
-    // Call OpenAI
-    const data = await generateMeta({
-      title: body.title,
-      description: body.description,
-      url: body.url,
-      imageUrl: body.imageUrl,
-      twitterHandle: body.twitterHandle,
-      language: body.language,
-      contentType: body.contentType,
-      includeSchema: body.includeSchema
-    });
+    if(idAiEnabled){
+          // Call OpenAI
+      data = await generateMeta({
+        title: body.title,
+        description: body.description,
+        url: body.url,
+        imageUrl: body.imageUrl,
+        twitterHandle: body.twitterHandle,
+        language: body.language,
+        contentType: body.contentType,
+        includeSchema: body.includeSchema
+      });
+    }else{
+      // Non-AI (Free) generation
+      data =  `
+      <title>${title}</title>
+      <meta name="description" content="${description}" />
+      <meta name="language" content="${language}" />
+      <link rel="canonical" href="${url}" />
+      
+      <meta property="og:type" content="${contentType}" />
+      <meta property="og:title" content="${title}" />
+      <meta property="og:description" content="${description}" />
+      <meta property="og:url" content="${url}" />
+      ${imageUrl ? `<meta property="og:image" content="${imageUrl}" />` : ""}
+      
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="${title}" />
+      <meta name="twitter:description" content="${description}" />
+      ${imageUrl ? `<meta name="twitter:image" content="${imageUrl}" />` : ""}
+      ${twitterHandle ? `<meta name="twitter:site" content="@${twitterHandle}" />` : ""}
+            `;
+    }
 
     // Save generation
     const gen = await Generation.create({

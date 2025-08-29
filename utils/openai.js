@@ -4,22 +4,34 @@ const OPENAI_KEY = process.env.OPENAI_API_KEY;
 async function generateMeta({title, description, url, imageUrl, twitterHandle, language, contentType, includeSchema}) {
   // Simple prompt; refine as needed
   const prompt = `
-You are an expert SEO and metadata assistant.
-Given:
-Title: ${title || ''}
-Description: ${description || ''}
-URL: ${url || ''}
-Image: ${imageUrl || ''}
-Twitter: ${twitterHandle || ''}
-Language: ${language || 'en'}
-Content type: ${contentType || 'website'}
-Generate:
-1) A polished meta title (max 60 chars)
-2) A polished meta description (max 160 chars)
-3) Meta tags for Open Graph and Twitter Card
-4) JSON-LD schema (if includeSchema is true)
-Return JSON with keys: title, description, metaTagsHtml, schemaJson
-`;
+  You are an expert SEO and metadata assistant.
+  Given:
+  Title: ${title || ""}
+  Description: ${description || ""}
+  URL: ${url || ""}
+  Image: ${imageUrl || ""}
+  Twitter: ${twitterHandle || ""}
+  Language: ${language || "en"}
+  Content type: ${contentType || "website"}
+  
+  Generate:
+  1) A polished meta title (max 60 chars)
+  2) A polished meta description (max 160 chars)
+  3) Full HTML meta tags including:
+     - SEO essentials (title, description, canonical, robots, viewport, theme-color, favicon)
+     - Open Graph tags
+     - Twitter Card tags
+     - Language & charset
+  4) JSON-LD schema (if includeSchema is true)
+  
+  Return JSON with keys: 
+  { 
+    "title": "...", 
+    "description": "...", 
+    "metaTagsHtml": "...", 
+    "schemaJson": { ... } 
+  }
+      `;;
 
   const model = process.env.FREE_MODEL || 'gpt-4o-mini';
   const payload = {
