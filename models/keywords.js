@@ -2,7 +2,8 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   return sequelize.define('Keywords', {
-    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+    keywordId:  {type: DataTypes.INTEGER,primaryKey: true,autoIncrement: true},
+    projectId:{type: DataTypes.UUID},
     phrase: { type: DataTypes.STRING, allowNull: false },
     searchVolume: { type: DataTypes.INTEGER },
     cpc: { type: DataTypes.FLOAT },

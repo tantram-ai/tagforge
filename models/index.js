@@ -9,44 +9,34 @@ const keywords = require('./keywords')(sequelize);
 const projects = require('./projects')(sequelize);
 
 
-// User
+// User and subscription
+users.hasOne(subscription,{foreignKey: "uid" });
+subscription.belongsTo(users,{foreignKey:"uid"});
 
-users.hasMany(models.Projects, { foreignKey: "userId" });
-users.hasOne(models.Subscription,{ foreignKey: "id" });
+// Projects and Input
+projects.hasOne(inputs, { foreignKey: "projectId" });
+inputs.belongsTo(projects, { foreignKey: "projectId" });
 
-// Projects 
+// project and keywords
+projects.hasMany(keywords, { foreignKey: "projectId"});
+keywords.belongsTo(projects, { foreignKey: "projectId"});
 
-projects.belongsTo(models.Users, { foreignKey: "userId" });
-projects.hasOne(models.Inputs, { foreignKey: "projectId" });
-projects.hasOne(models.MetaSet, { foreignKey: "projectId" });
-projects.hasMany(models.Keywords, { foreignKey: "projectId" });
-projects.hasMany(models.Generation, { foreignKey: "projectId" });
-
-// Plans 
-
-plans.hasMany(models.Subscription, { foreignKey: "planId" });
-
-// Inputs
-
-inputs.belongsTo(models.Projects, { foreignKey: "id" });
-
-// Keywords
-
-keywords.belongsTo(models.Projects, { foreignKey: "id" });
-
-// Subscription
-subscription.belongsTo(models.Users,{foreignKey:"id"});
-subscription.belongsTo(models.Plans,{foreignKey:"id"})
-
-// metaSet
-metaset.belongsTo(models.MetaSet,{foreignKey:"id"})
-
-// Generation
-
-generation.belongsTo(models.Projects,{foreignKey:'id'})
+//  user and project
+users.hasMany(projects, { foreignKey: "uid" });
+projects.belongsTo(users, { foreignKey: "uid" });
 
 
+// project and metaset
+projects.hasOne(metaset, { foreignKey: "projectId" });
+metaset.belongsTo(projects,{foreignKey:"projectId"})
 
+// project and generation
+projects.hasOne(generation, { foreignKey: "projectId" });
+generation.belongsTo(projects,{foreignKey:'projectId'})
+
+// plans and Subscription 
+plans.hasOne(subscription, {foreignKey: "planId" });
+subscription.belongsTo(plans,{foreignKey:"planId" })
 
 module.exports = {
   sequelize,
@@ -55,5 +45,6 @@ module.exports = {
   inputs,
   keywords,
   metaset,
-  subscription
+  subscription,
+  plans
 };

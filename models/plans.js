@@ -1,7 +1,9 @@
-// models/plan.js
-module.exports = (sequelize, DataTypes) => {
+
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
     const Plans = sequelize.define("Plans", {
-        serialNumber: {
+      planId: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,

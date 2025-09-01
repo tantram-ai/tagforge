@@ -7,6 +7,7 @@ const cors = require('cors')
 const generateRoutes = require('./routes/generate');
 const metasRoutes = require('./routes/metas'); // create similarly
 const stripeRoutes = require('./routes/stripe');
+const testRoutes = require('./routes/test')
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,6 +35,7 @@ app.use(express.json());
 // Routes
 app.use('/api', generateRoutes);
 app.use('/api/metas', metasRoutes);
+app.use('/api/test',testRoutes)
 
 // Stripe webhook needs raw body
 app.use('/webhook/stripe', express.raw({ type: 'application/json' }), stripeRoutes);

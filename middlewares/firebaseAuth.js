@@ -1,11 +1,11 @@
 const admin = require('../connections/firebase/firebaseAdmin');
-const { User } = require('../models');
+const { users } = require('../models');
 
-module.exports = async function firebaseAuth(req, res, next) {
+module.exports = firebaseAuth = async (req, res, next)=>{
   const authHeader = req.headers.authorization || '';
   const match = authHeader.match(/^Bearer (.*)$/);
   if (!match) {
-    return res.status(401).json({ error: 'No auth token' });
+    return res.status(401).json({ error: 'No auth token'});
   }
 
   const idToken = match[1];
@@ -13,9 +13,9 @@ module.exports = async function firebaseAuth(req, res, next) {
   try {
     const decoded = await admin.auth().verifyIdToken(idToken);
     // find or create user in DB
-    let user = await User.findOne({ where: { uid: decoded.uid } });
+    let user = await users.findOne({ where: { uid: decoded.uid } });
     if (!user) {
-      user = await User.create({
+      user = await users.create({
         uid: decoded.uid,
         email: decoded.email,
         displayName: decoded.name,
