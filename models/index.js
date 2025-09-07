@@ -10,7 +10,7 @@ const projects = require('./projects')(sequelize);
 
 
 // User and subscription
-users.hasOne(subscription,{foreignKey: "uid" });
+users.hasMany(subscription,{foreignKey: "uid" });
 subscription.belongsTo(users,{foreignKey:"uid"});
 
 // Projects and Input
