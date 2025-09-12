@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import CSS variables */
+@import "./theme/themeVariables.css";
+
+@layer base {
+    :root {
+      --color-bg: var(--color-bg-light) ;   /* Light background */
+      --color-text: var(--color-text-dark); /* Slate-800 */
+    }
+  
+    .dark {
+      --color-bg: var(--color-bg-dark);   /* Dark background */
+      --color-text:var(--color-text-white) ; /* Slate-50 */
+    }
+  }
+  
+body {
+    @apply transition-colors duration-300;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
