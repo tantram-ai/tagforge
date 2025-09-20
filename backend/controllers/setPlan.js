@@ -10,12 +10,12 @@ module.exports = setPlan = async (req, res)=>{
     try {
         const isPlancreated = await subscription.create(UpdatedData)
         if(isPlancreated){
-            return res.status(200).send({error:"", message:"Plan subscribed successfully", success:true, data:UpdatedData})
+            return res.status(200).json({error:"",code:"SUCCESS", message:"Plan subscribed successfully", data:UpdatedData})
         }else{
-            return res.status(500).send({error:"Internal Server error", message:"", success:false, data:null})
+            return res.status(500).json({error:"Internal Server error",code:"INTERNAL_SERVER", message:"Internal Server error",data:null})
         } 
     } catch (error) {
         console.log(error)
-        return res.status(500).send({error:error, message:"Internal Server error", success:false, data:null})
+        return res.status(500).json({error:error,code:"INTERNAL_SERVER", message:"Internal Server error", data:null})
     }
 }

@@ -17,6 +17,7 @@ import NightlightIcon from '@mui/icons-material/Nightlight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { Avatar, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
 import logo from '../../../assets/logo/ChatGPT Image Sep 12, 2025, 11_54_02 PM.png'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -40,7 +41,7 @@ export const NavigationBar = (props: Props) => {
     const { window, children, toggleTheme, mode } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+    const navigate = useNavigate();
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
@@ -139,8 +140,8 @@ export const NavigationBar = (props: Props) => {
 
                         <Grid size={4} container justifyContent="flex-end" >
                             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                <Button variant="contained" size="small" sx={{ mx: 2 }}>Start free trial</Button>
-                                <Button variant="outlined" size="small">Sign in</Button>
+                                <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={() => navigate("/signUp", { state: { PageName: "Plans & Pricing", RouteName: "/plans" } })}>Start free trial</Button>
+                                <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>
                                 <IconButton onClick={toggleTheme}
                                     sx={{
                                         backgroundColor: "background.paper",

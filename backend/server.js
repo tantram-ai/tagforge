@@ -9,12 +9,16 @@ const metasRoutes = require('./routes/metas'); // create similarly
 const stripeRoutes = require('./routes/stripe');
 const testRoute = require('./routes/test');
 const subscriptionRoute = require('./routes/subscription')
+const signupRoute = require('./routes/signup')
+const signInRoute = require('./routes/signIn')
+const planRoute = require('./routes/getPlans')
+const resendVerificationRoute = require('./routes/resendverification')
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 const dbPort = process.env.SERVER_PORT;
 
-const whitelist = ["*"];
+const whitelist = ["*", "http://localhost:5173"];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -26,24 +30,26 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 
 
 // Routes
-app.use('/api',generateRoutes);
-app.use('/api',metasRoutes);
-app.use('/api',testRoute);
-app.use('/api',subscriptionRoute)
-
+app.use('/api', generateRoutes);
+app.use('/api', metasRoutes);
+app.use('/api', testRoute);
+app.use('/api', subscriptionRoute)
+app.use('/api', signupRoute)
+app.use('/api', signInRoute)
+app.use('/api', planRoute)
+app.use('/api', resendVerificationRoute)
 
 
 // Stripe webhook needs raw body
 app.use('/webhook/stripe', express.raw({ type: 'application/json' }), stripeRoutes);
-
 
 const PORT = dbPort || 3000;
 

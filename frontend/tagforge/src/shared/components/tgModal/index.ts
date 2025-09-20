@@ -1,0 +1,2 @@
+export { TgModal } from "./TgModal";
+

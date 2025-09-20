@@ -1,14 +1,12 @@
 const admin = require('../connections/firebase/firebaseAdmin');
 const { users } = require('../models');
 
-module.exports = firebaseAuth = async (req, res, next)=>{
-  const authHeader = req.headers.authorization || '';
-  const match = authHeader.match(/^Bearer (.*)$/);
-  if (!match) {
-    return res.status(401).json({ error: 'No auth token'});
-  }
+module.exports = firebaseAuth = async (req, res, next) => {
+  const idToken = req.cookies.token;
 
-  const idToken = match[1];
+  if (!idToken) {
+    return res.status(401).json({ error: err, code: "NO_TOKEN", message: "No auth token", data: null });
+  }
 
   try {
     const decoded = await admin.auth().verifyIdToken(idToken);
@@ -22,11 +20,12 @@ module.exports = firebaseAuth = async (req, res, next)=>{
         photoURL: decoded.picture
       });
     }
+
     req.user = user;
     req.firebaseUser = decoded;
     next();
   } catch (err) {
     console.error('Firebase verify error', err);
-    return res.status(401).json({ error: 'Invalid auth token' });
+    return res.status(401).json({ error: err, code: "INVALID_TOKEN", message: "Invalid auth token", data: null });
   }
 }

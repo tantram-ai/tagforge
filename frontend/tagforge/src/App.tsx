@@ -1,5 +1,16 @@
-import { Button, Typography, Container } from "@mui/material";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { ProtectedRouteController, RouteGuard } from "./navigation";
+import { BrandPage } from "./pages/brandPage";
+import { About } from "./pages/about";
+import { Plans } from "./pages/plans";
+import { Login } from "./pages/AuthPages/login";
+import { Dashboard } from "./pages/dashboard";
 import { NavigationBar } from "./shared/components";
+import { SignUp } from "./pages/AuthPages/signUp";
+import { EmailVerification } from "./pages/AuthPages/emailVerification";
+import { useSnackbarStore } from "./store";
+import { Snackbar, Alert } from "@mui/material";
+
 
 type AppProps = {
   toggleTheme: () => void;
@@ -7,22 +18,55 @@ type AppProps = {
 };
 
 function App({ toggleTheme, mode }: AppProps) {
+  const { open, message, severity, closeSnackbar } = useSnackbarStore();
+
   return (
     <>
-      <NavigationBar toggleTheme={toggleTheme} mode={mode}>
-        <Container sx={{ py: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            Material UI Theming Example
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Current Mode: <strong>{mode}</strong>
-          </Typography>
-          <Button variant="contained" color="primary" onClick={toggleTheme}>
-            Toggle Theme
-          </Button>
-        </Container>
-      </NavigationBar>
 
+      <Router>
+        <Routes>
+          {/* General Routes */}
+
+          <Route path="/" element={<NavigationBar toggleTheme={toggleTheme} mode={mode}><BrandPage /></NavigationBar>} />
+          <Route path="/about" element={<NavigationBar toggleTheme={toggleTheme} mode={mode}><About /></NavigationBar>} />
+          <Route path="/plans" element={<NavigationBar toggleTheme={toggleTheme} mode={mode}><Plans /></NavigationBar>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signUp" element={<SignUp />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRouteController>
+                <Dashboard />
+              </ProtectedRouteController>
+            }
+          />
+          {/* Guarded routes */}
+
+          <Route
+            path="/emailVerification"
+            element={
+              <RouteGuard path="/emailVerification" redirectTo="/signUp">
+                <EmailVerification />
+              </RouteGuard>
+            }
+          />
+
+
+        </Routes>
+      </Router>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={closeSnackbar} severity={severity} variant="filled">
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
