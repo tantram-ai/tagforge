@@ -34,7 +34,7 @@ module.exports = subscriptionValidator = async (uid) => {
                 result = { ...result, PLAN_EXPIRED: true }
             }
 
-            result.DATA = subsciptionData?.dataValues || {}
+            result.DATA = {data:subsciptionData?.dataValues} || {data:nul}
         }
         return result
     } catch (error) {

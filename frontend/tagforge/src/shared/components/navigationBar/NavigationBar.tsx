@@ -18,6 +18,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import { Avatar, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
 import logo from '../../../assets/logo/ChatGPT Image Sep 12, 2025, 11_54_02 PM.png'
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore, useSnackbarStore } from '../../../store';
 
 
 
@@ -34,7 +35,6 @@ interface Props {
 
 const drawerWidth = 240;
 const navItems = ['Features', 'Pricing', 'About Us'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const NavigationBar = (props: Props) => {
 
@@ -45,6 +45,9 @@ export const NavigationBar = (props: Props) => {
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
+    const { decoded, clearAuth, planDetails } = useAuthStore()
+    const { showSnackbar } = useSnackbarStore()
+    const settings = [{ item: 'Dashboard', onClick: () => { } }, { item: 'Logout', onClick: () => clearAuth() }];
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -78,6 +81,15 @@ export const NavigationBar = (props: Props) => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleStartFreeTrial = () => {
+        if (!decoded) {
+            navigate("/signUp", { state: { PageName: "Plans & Pricing", RouteName: "/plans" } })
+        } else {
+            navigate("/plans")
+        }
+    }
+
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -140,13 +152,14 @@ export const NavigationBar = (props: Props) => {
 
                         <Grid size={4} container justifyContent="flex-end" >
                             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={() => navigate("/signUp", { state: { PageName: "Plans & Pricing", RouteName: "/plans" } })}>Start free trial</Button>
-                                <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>
+                                {!planDetails?.data && <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={handleStartFreeTrial}>Start free trial</Button>}
+                                {!decoded && <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>}
                                 <IconButton onClick={toggleTheme}
                                     sx={{
                                         backgroundColor: "background.paper",
                                         boxShadow: 2,
-                                        marginLeft: 2
+                                        marginLeft: 2,
+                                        marginRight: 1
                                         // "&:hover": {
                                         //   backgroundColor: "#757575",
                                         //   color: "white",
@@ -163,33 +176,62 @@ export const NavigationBar = (props: Props) => {
                                         />
                                     }
                                 </IconButton>
-                                {/* <Tooltip title="Open settings">
-                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Menu
-                                    sx={{ mt: '45px' }}
-                                    id="menu-appbar"
-                                    anchorEl={anchorElUser}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={Boolean(anchorElUser)}
-                                    onClose={handleCloseUserMenu}
-                                >
-                                    {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                                        </MenuItem>
-                                    ))}
-                                </Menu> */}
+                                {decoded &&
+                                    <>
+                                        <Tooltip title="Open settings">
+                                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                                <Avatar alt={decoded?.name} src="/static/images/avatar/2.jpg" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Menu
+                                            sx={{ mt: '45px' }}
+                                            id="menu-appbar"
+                                            anchorEl={anchorElUser}
+                                            anchorOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            keepMounted
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            open={Boolean(anchorElUser)}
+                                            onClose={handleCloseUserMenu}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 1.5,
+                                                    px: 2,
+                                                    py: 1.5,
+                                                }}
+                                            >
+                                                <Avatar alt={decoded?.name} src="/user.png" sx={{ width: 40, height: 40 }} />
+                                                <Box>
+                                                    <Typography variant="subtitle1" fontWeight="bold">
+                                                        {decoded?.name}
+                                                    </Typography>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {decoded?.email}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                            <Divider />
+                                            {settings.map((setting) => (
+                                                <MenuItem key={setting.item} onClick={() => {
+                                                    handleCloseUserMenu
+                                                    setting.onClick()
+                                                    showSnackbar("Logout Successfull", "success")
+                                                }}>
+                                                    <Typography sx={{ textAlign: 'center' }}>{setting.item}</Typography>
+                                                </MenuItem>
+                                            ))}
+                                        </Menu>
+                                    </>
+                                }
+
                             </Box>
                         </Grid>
                     </Grid>

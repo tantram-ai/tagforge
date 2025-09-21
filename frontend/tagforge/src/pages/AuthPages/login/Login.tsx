@@ -47,6 +47,7 @@ export const Login = () => {
         setName("/emailVerification")
         navigate('/emailVerification', { state: { email: loginInfo?.email, password: loginInfo?.password } })
       } else if (err?.response?.data?.code == "PLAN_EXPIRED" || err?.response?.data?.code == "NOT_SUBSCRIBED") {
+        setTokenFromCookie()
         showSnackbar(err?.response?.data?.message, "warning");
         navigate('/plans')
       }
