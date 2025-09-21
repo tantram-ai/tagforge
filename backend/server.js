@@ -13,6 +13,7 @@ const signupRoute = require('./routes/signup')
 const signInRoute = require('./routes/signIn')
 const planRoute = require('./routes/getPlans')
 const resendVerificationRoute = require('./routes/resendverification')
+const forgotPasswordRoute = require('./routes/forgotPassword')
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,6 +47,7 @@ app.use('/api', signupRoute)
 app.use('/api', signInRoute)
 app.use('/api', planRoute)
 app.use('/api', resendVerificationRoute)
+app.use('/api', forgotPasswordRoute)
 
 
 // Stripe webhook needs raw body

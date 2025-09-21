@@ -33,10 +33,10 @@ export const SignUp = () => {
     }
     try {
       const result = await signUp(signupInfo);
-      if (result.code === "SUCCESS") {
+      if (result?.code === "SUCCESS") {
         showSnackbar(result?.message, "success");
         setName("/emailVerification")
-        navigate('/emailVerification')
+        navigate('/emailVerification',{ state: { email: signupInfo?.email, password: signupInfo?.password } })
       }
     } catch (err: any) {
       if (err?.response?.data?.code == "EMAIL_ALREADY_EXISTS") {
@@ -62,8 +62,8 @@ export const SignUp = () => {
       <Box
         sx={{
           textAlign: "center",
-          mt: 10,
-          mb: 6,
+          mt: 4,
+          mb:5,
         }}
       >
         {/* Replace with your logo image if available */}
@@ -149,7 +149,7 @@ export const SignUp = () => {
       </Box>
 
       {/* Already have an account */}
-      <Box sx={{ textAlign: "center", mt: 3 }}>
+      <Box sx={{ textAlign: "center", mt: 3 , mb:3 }}>
         <Typography variant="body2">
           Already have an account?{" "}
           <Link

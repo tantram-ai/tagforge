@@ -6,9 +6,10 @@ type ProtectedRouteProps = {
 }
 
 export const ProtectedRouteController = ({ children }: ProtectedRouteProps) => {
-    const user = useAuthStore((state: any) => state.user);
+    const {decoded} = useAuthStore()
 
-    if (!user) {
+    console.log(decoded , "*******")
+    if (!decoded) {
         return <Navigate to="/login" replace />;
     }
 

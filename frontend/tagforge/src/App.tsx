@@ -8,8 +8,11 @@ import { Dashboard } from "./pages/dashboard";
 import { NavigationBar } from "./shared/components";
 import { SignUp } from "./pages/AuthPages/signUp";
 import { EmailVerification } from "./pages/AuthPages/emailVerification";
-import { useSnackbarStore } from "./store";
+import { useAuthStore, useSnackbarStore } from "./store";
 import { Snackbar, Alert } from "@mui/material";
+import { useEffect } from "react";
+import { ResetPassword } from "./pages/AuthPages/passwordReset";
+import { ChangePassword } from "./pages/AuthPages/changePassword";
 
 
 type AppProps = {
@@ -19,6 +22,11 @@ type AppProps = {
 
 function App({ toggleTheme, mode }: AppProps) {
   const { open, message, severity, closeSnackbar } = useSnackbarStore();
+  const { setTokenFromCookie } = useAuthStore();
+
+  useEffect(() => {
+    setTokenFromCookie();
+  }, [setTokenFromCookie]);
 
   return (
     <>
@@ -32,6 +40,7 @@ function App({ toggleTheme, mode }: AppProps) {
           <Route path="/plans" element={<NavigationBar toggleTheme={toggleTheme} mode={mode}><Plans /></NavigationBar>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
+          <Route path="/changePassword"element={<ChangePassword />}/>
 
           {/* Protected Routes */}
           <Route
@@ -53,6 +62,7 @@ function App({ toggleTheme, mode }: AppProps) {
             }
           />
 
+         
 
         </Routes>
       </Router>

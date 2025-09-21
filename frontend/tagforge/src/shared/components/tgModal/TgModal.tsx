@@ -27,16 +27,13 @@ export const TgModal = ({children , open , setOpen}:TgModalProps) => {
     return (
         <React.Fragment>
             <BootstrapDialog
-                onClose={setOpen(false)}
+                onClose={()=>setOpen(false)}
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
-                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Modal title
-                </DialogTitle>
                 <IconButton
                     aria-label="close"
-                    onClick={setOpen(false)}
+                    onClick={()=>setOpen(false)}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,
@@ -49,11 +46,6 @@ export const TgModal = ({children , open , setOpen}:TgModalProps) => {
                 <DialogContent dividers>
                    {children}
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={setOpen(false)}>
-                        Save changes
-                    </Button>
-                </DialogActions>
             </BootstrapDialog>
         </React.Fragment>
     );

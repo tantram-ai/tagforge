@@ -1,19 +1,51 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
-type AuthState = {
-  user: null | { id: string; name: string }
-  login: (user: { id: string; name: string }) => void
-  logout: () => void
+
+interface AuthState {
+  decoded: any | null;
+  planDetails: any | null
+  setTokenFromCookie: () => void;
+  clearAuth: () => void;
 }
+
+
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: null,
-      login: (user) => set({ user }),
-      logout: () => set({ user: null }),
+      decoded: null,
+      planDetails: null,
+      setTokenFromCookie: () => {
+        const token: any = Cookies.get("token");
+        const planData: any = Cookies.get("planData")
+        if (token) {
+          try {
+            const decoded = jwtDecode(token);
+            const planDetails = jwtDecode(planData)
+            set({ planDetails, decoded });
+          } catch (error) {
+            console.error("Invalid token:", error);
+            set({ planDetails: null, decoded: null });
+          }
+        } else {
+          set({ planDetails: null, decoded: null });
+        }
+      },
+
+      clearAuth: () => {
+        Cookies.remove("token");
+        set({ planDetails: null, decoded: null });
+      },
     }),
-    { name: 'auth-storage' } // persists to localStorage
+    {
+      name: "auth-storage",
+      partialize: (state) => ({
+        planDetails: state.planDetails,
+        decoded: state.decoded,
+      }),
+    }
   )
-)
+);

@@ -1,1 +1,1 @@
-export { getProfile, login, logout, signUp } from "./authServices/authServices";
+export { getProfile, login, logout, signUp, resendVerificationEmail ,forgotPassword,resetPassword} from "./authServices/authServices";

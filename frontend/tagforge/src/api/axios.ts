@@ -1,26 +1,21 @@
 import axios, {
   AxiosError,
-  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
 
-// Extend AxiosRequestConfig to support _retry flag
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-// Create axios instance
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}${'/api'}` || "http://localhost:5000/api",
-  withCredentials: true, // 🔑 send cookies automatically
+  withCredentials: true,
 });
 
 // Request Interceptor
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig): CustomAxiosRequestConfig => {
-    // No need to add Authorization header manually
-    // since cookies will be sent automatically
     return config;
   },
   (error: AxiosError): Promise<never> => {

@@ -8,34 +8,68 @@ import {
   Typography,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { login } from "../../../api/services";
-import { useGuardedRoutesStore } from "../../../store";
+import { useAuthStore, useGuardedRoutesStore } from "../../../store";
+import { useSnackbarStore } from "../../../store";
+import { useRef, useState } from "react";
+import { TgModal } from "../../../shared/components/tgModal";
+import { ResetPassword } from "../passwordReset";
 
 export const Login = () => {
   const navigate = useNavigate();
+  const formRef = useRef<HTMLFormElement>(null);
+  const { showSnackbar } = useSnackbarStore()
+  const [isLoading, setLoading] = useState<boolean>(false)
   const { setName } = useGuardedRoutesStore()
+  const [forgotPassModal, setForgotPassModal] = useState<boolean>(false)
+  const { setTokenFromCookie, decoded } = useAuthStore()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true)
     const data = new FormData(event.currentTarget);
     const loginInfo = {
       email: data.get("email"),
       password: data.get("password"),
     }
-    console.log(loginInfo);
     try {
       const result = await login(loginInfo);
-      console.log(result,"&&&&&&&&&&&&&&")
-    } catch (err) {
-      console.error("Login failed", err);
+      if (result.code === "SUCCESS") {
+        setTokenFromCookie()
+        showSnackbar(result?.message, "success");
+        navigate('/dashboard')
+      }
+    } catch (err: any) {
+      console.log(err?.response)
+      if (err?.response?.data?.code == "VERIFY_EMAIL") {
+        showSnackbar(err?.response?.data?.message, "warning");
+        setName("/emailVerification")
+        navigate('/emailVerification', { state: { email: loginInfo?.email, password: loginInfo?.password } })
+      } else if (err?.response?.data?.code == "PLAN_EXPIRED" || err?.response?.data?.code == "NOT_SUBSCRIBED") {
+        showSnackbar(err?.response?.data?.message, "warning");
+        navigate('/plans')
+      }
+      else {
+        if (err?.response?.data?.code == "INTERNAL_SERVER") {
+          showSnackbar("Internal Server error", "error");
+        }
+      }
+    } finally {
+      formRef.current?.reset();
+      setLoading(false)
     }
   };
-  
+
   const handleGoogleLogin = () => {
     console.log("Google login clicked");
+    setForgotPassModal(true)
     // integrate Google login logic here
   };
+
+  if (decoded) {
+   return <Navigate to="/" replace />
+  }
 
   return (
     <Container component="main" maxWidth="sm">
@@ -43,8 +77,8 @@ export const Login = () => {
       <Box
         sx={{
           textAlign: "center",
-          mt: 10,
-          mb: 6,
+          mt: 4,
+          mb: 4,
         }}
       >
         <Typography variant="h3" fontWeight="bold" gutterBottom>
@@ -56,7 +90,7 @@ export const Login = () => {
       </Box>
 
       {/* Login Form */}
-      <Box component="form" onSubmit={handleSubmit} >
+      <Box component="form" ref={formRef} onSubmit={handleSubmit} >
         {/* Google Login */}
         <Button
           fullWidth
@@ -90,8 +124,19 @@ export const Login = () => {
           type="password"
           fullWidth
           required
-          sx={{ mb: 3 }}
+          sx={{ mb: 1 }}
         />
+        <Box sx={{ textAlign: "end", mb: 1 }}>
+          <Typography variant="body2">
+            <Link
+              onClick={() => setForgotPassModal(true)}
+              underline="hover"
+              sx={{ cursor: "pointer", fontWeight: 500 }}
+            >
+              Forgotten your password?
+            </Link>
+          </Typography>
+        </Box>
 
         <Button
           type="submit"
@@ -103,6 +148,9 @@ export const Login = () => {
             fontSize: "1rem",
             fontWeight: "bold",
           }}
+          loading={isLoading}
+          loadingPosition="end"
+          disabled={isLoading}
         >
           Login
         </Button>
@@ -121,6 +169,12 @@ export const Login = () => {
           </Link>
         </Typography>
       </Box>
+
+      <div>
+        <TgModal open={forgotPassModal} setOpen={setForgotPassModal}>
+          <ResetPassword setForgotPassModal={setForgotPassModal} />
+        </TgModal>
+      </div>
     </Container>
   );
 };

@@ -13,7 +13,7 @@ router.get('/plans', async (req, res) => {
         }
 
         if (!idToken) {
-            res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: getAllPlans() })
+            return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: getAllPlans() })
         } else {
             const decoded = await admin.auth().verifyIdToken(idToken);
             const isUserHasPlan = await subscription.findAll({ where: { uid: decoded.uid } })
@@ -25,7 +25,7 @@ router.get('/plans', async (req, res) => {
                         price: { [Op.ne]: 0 }
                     }
                 });
-                res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: plansData })
+               return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: plansData })
             }
         }
 
