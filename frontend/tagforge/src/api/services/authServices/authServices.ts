@@ -21,8 +21,8 @@ export const getProfile = async () => {
   return res.data;
 };
 
-export const resendVerificationEmail = async (data: resendVerificationEmailType) => {
-  const res = await api.post<responseType>("/resendVerification", data)
+export const resendVerificationEmail = async (token:string) => {
+  const res = await api.post<responseType>("/resendVerification", token)
   return res.data
 }
 
@@ -35,6 +35,21 @@ export const resetPassword = async (data: resetPasswordTypes) => {
   const res = await api.post<responseType>("/resetPassword", data)
   return res.data
 }
+
+export const googleLogin = async (token: string) => {
+  const res = await api.post<responseType>(
+    "/googleLogin",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res.data;
+};
+
+
 
 
 

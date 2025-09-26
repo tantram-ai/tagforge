@@ -6,22 +6,24 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { resendVerificationEmail } from "../../../api/services";
 import { useSnackbarStore } from "../../../store";
 
 
 export const EmailVerification = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const oobCode = searchParams.get("oobCode") || "";
   const location = useLocation()
   const { showSnackbar } = useSnackbarStore()
-  const { email, password } = location.state || {};
+  const { token } = location.state || {};
   const [sending, setSending] = useState<boolean>(false)
 
   const handleResend = async () => {
     setSending(true)
     try {
-      const result = await resendVerificationEmail({ email, password });
+      const result = await resendVerificationEmail(token);
       if (result.code === "SUCCESS") {
         showSnackbar(result?.message, "success");
         navigate('/login')
@@ -32,6 +34,13 @@ export const EmailVerification = () => {
       setSending(false)
     }
   };
+
+  if (oobCode) {
+    return <Navigate to="/login" replace />;
+  }
+  if(!token){
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <Container component="main" maxWidth="sm">

@@ -11,8 +11,8 @@ import { EmailVerification } from "./pages/AuthPages/emailVerification";
 import { useAuthStore, useSnackbarStore } from "./store";
 import { Snackbar, Alert } from "@mui/material";
 import { useEffect } from "react";
-import { ResetPassword } from "./pages/AuthPages/passwordReset";
 import { ChangePassword } from "./pages/AuthPages/changePassword";
+import { PaymentsPage } from "./pages/paymentPage";
 
 
 type AppProps = {
@@ -40,7 +40,11 @@ function App({ toggleTheme, mode }: AppProps) {
           <Route path="/plans" element={<NavigationBar toggleTheme={toggleTheme} mode={mode}><Plans /></NavigationBar>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
-          <Route path="/changePassword"element={<ChangePassword />}/>
+          <Route path="/changePassword" element={<ChangePassword />} />
+          <Route path="/emailVerification" element={<EmailVerification />} />
+          <Route path="/payments" element={<PaymentsPage />} />
+
+
 
           {/* Protected Routes */}
           <Route
@@ -53,17 +57,14 @@ function App({ toggleTheme, mode }: AppProps) {
           />
           {/* Guarded routes */}
 
-          <Route
+          {/* <Route
             path="/emailVerification"
             element={
               <RouteGuard path="/emailVerification" redirectTo="/signUp">
                 <EmailVerification />
               </RouteGuard>
             }
-          />
-
-         
-
+          /> */}
         </Routes>
       </Router>
 

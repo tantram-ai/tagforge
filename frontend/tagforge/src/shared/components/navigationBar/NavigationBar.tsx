@@ -34,7 +34,6 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ['Features', 'Pricing', 'About Us'];
 
 export const NavigationBar = (props: Props) => {
 
@@ -47,7 +46,15 @@ export const NavigationBar = (props: Props) => {
     };
     const { decoded, clearAuth, planDetails } = useAuthStore()
     const { showSnackbar } = useSnackbarStore()
-    const settings = [{ item: 'Dashboard', onClick: () => { } }, { item: 'Logout', onClick: () => clearAuth() }];
+    const settings = [
+        { item: 'Dashboard', onClick: () => { } },
+        { item: 'Logout', onClick: () => clearAuth() }
+    ];
+    const navItems = [
+        { item: 'Features', onClick: () => { } },
+        { item: 'Pricing', onClick: () => navigate('/plans') },
+        { item: 'About Us', onClick: () => { } },
+    ];
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -63,9 +70,9 @@ export const NavigationBar = (props: Props) => {
             <Divider />
             <List>
                 {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
+                    <ListItem key={item?.item} disablePadding>
                         <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
+                            <ListItemText primary={item?.item} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -92,172 +99,174 @@ export const NavigationBar = (props: Props) => {
 
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar component="nav"
-                sx={(theme) => ({
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                    boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                    borderRadius: '20px',
-                    width: '90%',
-                    right: '5%',
-                    top: '5%',
-                    "& .MuiToolbar-root": {
-                        minHeight: 60,
-                    },
-                })}>
-                <Toolbar>
-                    <Grid container sx={{ width: '100%' }}>
-                        <Grid size={4} >
+        <>
+            <Box sx={{ display: 'flex' }}>
+                <CssBaseline />
+                <AppBar component="nav"
+                    sx={(theme) => ({
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                        borderRadius: '20px',
+                        width: '90%',
+                        right: '5%',
+                        top: '5%',
+                        "& .MuiToolbar-root": {
+                            minHeight: 60,
+                        },
+                    })}>
+                    <Toolbar>
+                        <Grid container sx={{ width: '100%' }}>
+                            <Grid size={4} >
 
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                edge="start"
-                                onClick={handleDrawerToggle}
-                                sx={{ mr: 2, display: { sm: 'none' } }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Typography
-                                component="div"
-                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                            >
-                                <img
-                                    src={logo}
-                                    alt="logo"
-                                    loading="lazy"
-                                    width={100}
-                                    style={{ marginTop: '8px' }}
-                                />
-                            </Typography>
-
-                        </Grid>
-
-                        <Grid size={4} container justifyContent="center">
-                            <Box sx={{ display: { xs: 'none', sm: 'block' }, mt: 0.4 }}>
-                                {navItems.map((item) => (
-                                    <Button key={item} sx={(theme) => ({
-                                        color: theme.palette.text.primary,
-                                        borderRadius: '10px',
-                                        mx: 1
-                                    })}>
-                                        {item}
-                                    </Button>
-                                ))}
-                            </Box>
-                        </Grid>
-
-                        <Grid size={4} container justifyContent="flex-end" >
-                            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                {!planDetails?.data && <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={handleStartFreeTrial}>Start free trial</Button>}
-                                {!decoded && <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>}
-                                <IconButton onClick={toggleTheme}
-                                    sx={{
-                                        backgroundColor: "background.paper",
-                                        boxShadow: 2,
-                                        marginLeft: 2,
-                                        marginRight: 1
-                                        // "&:hover": {
-                                        //   backgroundColor: "#757575",
-                                        //   color: "white",
-                                        // }
-                                    }}
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    edge="start"
+                                    onClick={handleDrawerToggle}
+                                    sx={{ mr: 2, display: { sm: 'none' } }}
                                 >
-                                    {mode === "light" ? <NightlightIcon sx={(theme) => ({
-                                        color: theme.palette.text.primary,
-                                    })}
-                                    /> :
-                                        <LightModeIcon sx={(theme) => ({
+                                    <MenuIcon />
+                                </IconButton>
+                                <Typography
+                                    component="div"
+                                    sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                                >
+                                    <img
+                                        src={logo}
+                                        alt="logo"
+                                        loading="lazy"
+                                        width={100}
+                                        style={{ marginTop: '8px' }}
+                                    />
+                                </Typography>
+
+                            </Grid>
+
+                            <Grid size={4} container justifyContent="center">
+                                <Box sx={{ display: { xs: 'none', sm: 'block' }, mt: 0.4 }}>
+                                    {navItems.map((item) => (
+                                        <Button key={item.item} onClick={item?.onClick} sx={(theme) => ({
+                                            color: theme.palette.text.primary,
+                                            borderRadius: '10px',
+                                            mx: 1
+                                        })}>
+                                            {item?.item}
+                                        </Button>
+                                    ))}
+                                </Box>
+                            </Grid>
+
+                            <Grid size={4} container justifyContent="flex-end" >
+                                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                    {!planDetails?.data && <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={handleStartFreeTrial}>Start free trial</Button>}
+                                    {!decoded && <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>}
+                                    <IconButton onClick={toggleTheme}
+                                        sx={{
+                                            backgroundColor: "background.paper",
+                                            boxShadow: 2,
+                                            marginLeft: 2,
+                                            marginRight: 1
+                                            // "&:hover": {
+                                            //   backgroundColor: "#757575",
+                                            //   color: "white",
+                                            // }
+                                        }}
+                                    >
+                                        {mode === "light" ? <NightlightIcon sx={(theme) => ({
                                             color: theme.palette.text.primary,
                                         })}
-                                        />
-                                    }
-                                </IconButton>
-                                {decoded &&
-                                    <>
-                                        <Tooltip title="Open settings">
-                                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                                <Avatar alt={decoded?.name} src="/static/images/avatar/2.jpg" />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Menu
-                                            sx={{ mt: '45px' }}
-                                            id="menu-appbar"
-                                            anchorEl={anchorElUser}
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            keepMounted
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            open={Boolean(anchorElUser)}
-                                            onClose={handleCloseUserMenu}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: 1.5,
-                                                    px: 2,
-                                                    py: 1.5,
+                                        /> :
+                                            <LightModeIcon sx={(theme) => ({
+                                                color: theme.palette.text.primary,
+                                            })}
+                                            />
+                                        }
+                                    </IconButton>
+                                    {decoded &&
+                                        <>
+                                            <Tooltip title="Open settings">
+                                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                                    <Avatar alt={decoded?.name} src="/static/images/avatar/2.jpg" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Menu
+                                                sx={{ mt: '45px' }}
+                                                id="menu-appbar"
+                                                anchorEl={anchorElUser}
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'right',
                                                 }}
+                                                keepMounted
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'right',
+                                                }}
+                                                open={Boolean(anchorElUser)}
+                                                onClose={handleCloseUserMenu}
                                             >
-                                                <Avatar alt={decoded?.name} src="/user.png" sx={{ width: 40, height: 40 }} />
-                                                <Box>
-                                                    <Typography variant="subtitle1" fontWeight="bold">
-                                                        {decoded?.name}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {decoded?.email}
-                                                    </Typography>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 1.5,
+                                                        px: 2,
+                                                        py: 1.5,
+                                                    }}
+                                                >
+                                                    <Avatar alt={decoded?.name} src="/user.png" sx={{ width: 40, height: 40 }} />
+                                                    <Box>
+                                                        <Typography variant="subtitle1" fontWeight="bold">
+                                                            {decoded?.name}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            {decoded?.email}
+                                                        </Typography>
+                                                    </Box>
                                                 </Box>
-                                            </Box>
-                                            <Divider />
-                                            {settings.map((setting) => (
-                                                <MenuItem key={setting.item} onClick={() => {
-                                                    handleCloseUserMenu
-                                                    setting.onClick()
-                                                    showSnackbar("Logout Successfull", "success")
-                                                }}>
-                                                    <Typography sx={{ textAlign: 'center' }}>{setting.item}</Typography>
-                                                </MenuItem>
-                                            ))}
-                                        </Menu>
-                                    </>
-                                }
+                                                <Divider />
+                                                {settings.map((setting) => (
+                                                    <MenuItem key={setting.item} onClick={() => {
+                                                        handleCloseUserMenu
+                                                        setting.onClick()
+                                                        showSnackbar("Logout Successfull", "success")
+                                                    }}>
+                                                        <Typography sx={{ textAlign: 'center' }}>{setting.item}</Typography>
+                                                    </MenuItem>
+                                                ))}
+                                            </Menu>
+                                        </>
+                                    }
 
-                            </Box>
+                                </Box>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
-            <nav>
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
-                    }}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-            </nav>
+                    </Toolbar>
+                </AppBar>
+                <nav>
+                    <Drawer
+                        container={container}
+                        variant="temporary"
+                        open={mobileOpen}
+                        onClose={handleDrawerToggle}
+                        ModalProps={{
+                            keepMounted: true, // Better open performance on mobile.
+                        }}
+                        sx={{
+                            display: { xs: 'block', sm: 'none' },
+                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </nav>
+            </Box>
             <Box component="main" sx={{ p: 3 }}>
                 <Toolbar />
                 {children}
             </Box>
-        </Box>
+        </>
     )
 }

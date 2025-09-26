@@ -9,14 +9,13 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../../../api/services";
-import { useGuardedRoutesStore, useSnackbarStore } from "../../../store";
+import { useSnackbarStore } from "../../../store";
+import { GoogleSignIn } from "../googleSignIn";
 
 export const SignUp = () => {
   const navigate = useNavigate();
-  const { setName } = useGuardedRoutesStore()
   const { showSnackbar } = useSnackbarStore()
   const formRef = useRef<HTMLFormElement>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
@@ -35,8 +34,7 @@ export const SignUp = () => {
       const result = await signUp(signupInfo);
       if (result?.code === "SUCCESS") {
         showSnackbar(result?.message, "success");
-        setName("/emailVerification")
-        navigate('/emailVerification',{ state: { email: signupInfo?.email, password: signupInfo?.password } })
+        navigate('/emailVerification', { state: { token: result?.data?.token } })
       }
     } catch (err: any) {
       if (err?.response?.data?.code == "EMAIL_ALREADY_EXISTS") {
@@ -50,11 +48,6 @@ export const SignUp = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    console.log("Google sign-in clicked");
-    showSnackbar("This is a success message!", "success");
-    // integrate Google auth logic here
-  };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -63,7 +56,7 @@ export const SignUp = () => {
         sx={{
           textAlign: "center",
           mt: 4,
-          mb:5,
+          mb: 5,
         }}
       >
         {/* Replace with your logo image if available */}
@@ -78,21 +71,7 @@ export const SignUp = () => {
       {/* Form Section */}
       <Box component="form" ref={formRef} onSubmit={handleSubmit} sx={{}} >
         {/* Google Sign In */}
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleSignIn}
-          sx={{
-            mb: 3,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: 500,
-          }}
-        >
-          Continue with Google
-        </Button>
+        <GoogleSignIn />
 
         <Divider sx={{ mb: 3 }}>or sign up with email</Divider>
 
@@ -149,7 +128,7 @@ export const SignUp = () => {
       </Box>
 
       {/* Already have an account */}
-      <Box sx={{ textAlign: "center", mt: 3 , mb:3 }}>
+      <Box sx={{ textAlign: "center", mt: 3, mb: 3 }}>
         <Typography variant="body2">
           Already have an account?{" "}
           <Link

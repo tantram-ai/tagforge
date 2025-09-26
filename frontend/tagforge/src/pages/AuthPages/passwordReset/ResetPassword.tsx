@@ -7,9 +7,9 @@ import {
   Divider,
   Link,
 } from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
 import { useSnackbarStore } from "../../../store";
 import { forgotPassword } from "../../../api/services";
+import { GoogleSignIn } from "../googleSignIn";
 
 type ResetPasswordProps = {
   setForgotPassModal: any
@@ -30,11 +30,14 @@ export const ResetPassword = ({ setForgotPassModal }: ResetPasswordProps) => {
       }
     } catch (err: any) {
       showSnackbar(err?.response?.data?.message, "error");
+      setLoading(true)
     } finally {
       setEmail("")
       setLoading(true)
     }
   };
+
+
 
   return (
     <Box
@@ -91,18 +94,11 @@ export const ResetPassword = ({ setForgotPassModal }: ResetPasswordProps) => {
         </Box>
 
         {/* Divider */}
-        <Divider sx={{ my: 3 }}>or</Divider>
+        <Divider sx={{ my: 2 }}>or</Divider>
 
         {/* Google Sign-in (Optional) */}
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          size="large"
-          sx={{ borderRadius: 2 }}
-        >
-          Continue with Google
-        </Button>
+        <GoogleSignIn />
+
 
         {/* Back to Login */}
         <Typography sx={{ mt: 3 }}>

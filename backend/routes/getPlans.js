@@ -1,31 +1,34 @@
 const express = require('express');
 const { plans } = require('../models');
 const subscription = require('../models/subscription');
+const { Op } = require('sequelize');
 const router = express.Router();
 
-router.get('/plans', async (req, res) => {
-    const idToken = req.cookies.token;
+router.get('/getPlans', async (req, res) => {
+    const idToken = req?.cookies?.token || null;
+
+    const excludeFreePlan = {
+        where: {
+            price: { [Op.ne]: 0 }
+        },
+        raw: true
+    }
 
     try {
-        const getAllPlans = async () => {
-            const plansData = await plans.findAll({ raw: true })
+        const getAllPlans = async (excludeFree = false) => {
+            const plansData = await plans.findAll(excludeFree ? { ...excludeFreePlan } : { raw: true })
             return plansData
         }
 
         if (!idToken) {
-            return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: getAllPlans() })
+            return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: await getAllPlans() })
         } else {
             const decoded = await admin.auth().verifyIdToken(idToken);
             const isUserHasPlan = await subscription.findAll({ where: { uid: decoded.uid } })
             if (!isUserHasPlan) {
                 res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: getAllPlans() })
             } else {
-                const plansData = await plans.findAll({
-                    where: {
-                        price: { [Op.ne]: 0 }
-                    }
-                });
-               return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: plansData })
+                return res.status(200).json({ error: "", code: "SUCCESS", message: "Plans fetched successfully", data: getAllPlans(true) })
             }
         }
 

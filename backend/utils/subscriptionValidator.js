@@ -20,11 +20,15 @@ module.exports = subscriptionValidator = async (uid) => {
                     uid: uid,
                     currentPeriodEnd: { [Op.gt]: new Date() }
                 },
-                attributes: ["status", "plan", "currentPeriodStart", "currentPeriodEnd", "id"],
+                attributes: ["status", "plan", "currentPeriodStart", "currentPeriodEnd", "id", "PreferedBillingCycle"],
                 include: [
                     {
                         model: plans,
-                        attributes: ["planId", "name", "projectsLimit", "keywordsPerProject", "aiGenerations", "maxContentLength", "billingCycle", "features"],
+                        attributes: ["planId", "name", "projectsLimit",
+                            "keywordsPerProject",
+                            "aiGenerations", "maxContentLength",
+                            "billingCycle", "features", "offerTitle",
+                            "billingCycleDiscount", "billingCycle"],
                     }
                 ],
                 order: [[plans, "price", "DESC"]],
@@ -34,7 +38,7 @@ module.exports = subscriptionValidator = async (uid) => {
                 result = { ...result, PLAN_EXPIRED: true }
             }
 
-            result.DATA = {data:subsciptionData?.dataValues} || {data:nul}
+            result.DATA = { data: subsciptionData?.dataValues } || { data: nul }
         }
         return result
     } catch (error) {

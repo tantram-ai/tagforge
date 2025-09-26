@@ -16,7 +16,7 @@ router.post("/forgotPassword", async (req, res) => {
                 continueUrl: "http://localhost:5173/changePassword",
             }
         );
-       return res.status(200).json({ error: "", code: "SUCCESS", message: "Password reset email sent. Please check your inbox.", data: null })
+        return res.status(200).json({ error: "", code: "SUCCESS", message: "Password reset email sent. Please check your inbox.", data: null })
     } catch (err) {
         res.status(400).json({ error: err, code: "INTERNAL_SERVER", message: err.response?.data?.error?.message || err.message, data: null })
     }

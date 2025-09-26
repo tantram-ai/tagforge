@@ -5,7 +5,7 @@ const router = express.Router();
 
 const middlewares = [firebaseAuth]
 
-router.post('/setPlan',middlewares, express.json(), setPlan);
+router.post('/buyPlan',middlewares, express.json(), setPlan);
 
 
 module.exports = router

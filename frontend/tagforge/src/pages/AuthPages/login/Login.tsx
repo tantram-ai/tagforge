@@ -7,23 +7,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
 import { Navigate, useNavigate } from "react-router-dom";
 import { login } from "../../../api/services";
-import { useAuthStore, useGuardedRoutesStore } from "../../../store";
+import { useAuthStore } from "../../../store";
 import { useSnackbarStore } from "../../../store";
 import { useRef, useState } from "react";
 import { TgModal } from "../../../shared/components/tgModal";
 import { ResetPassword } from "../passwordReset";
+import { GoogleSignIn } from "../googleSignIn";
 
 export const Login = () => {
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const { showSnackbar } = useSnackbarStore()
   const [isLoading, setLoading] = useState<boolean>(false)
-  const { setName } = useGuardedRoutesStore()
   const [forgotPassModal, setForgotPassModal] = useState<boolean>(false)
-  const { setTokenFromCookie, decoded } = useAuthStore()
+  const { setTokenFromCookie, decoded, planDetails } = useAuthStore()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,19 +40,18 @@ export const Login = () => {
         navigate('/dashboard')
       }
     } catch (err: any) {
-      console.log(err?.response)
-      if (err?.response?.data?.code == "VERIFY_EMAIL") {
-        showSnackbar(err?.response?.data?.message, "warning");
-        setName("/emailVerification")
-        navigate('/emailVerification', { state: { email: loginInfo?.email, password: loginInfo?.password } })
-      } else if (err?.response?.data?.code == "PLAN_EXPIRED" || err?.response?.data?.code == "NOT_SUBSCRIBED") {
+      console.log(err)
+      const { code, message, data } = err?.response?.data || {}
+      if (code == "VERIFY_EMAIL") {
+        showSnackbar(message, "warning");
+        navigate('/emailVerification', { state: { token: data?.token } })
+      } else if (code == "PLAN_EXPIRED" || code == "NOT_SUBSCRIBED") {
         setTokenFromCookie()
-        showSnackbar(err?.response?.data?.message, "warning");
-        navigate('/plans')
+        showSnackbar(message, "warning");
       }
       else {
-        if (err?.response?.data?.code == "INTERNAL_SERVER") {
-          showSnackbar("Internal Server error", "error");
+        if (code == "ERR_BAD_REQUEST") {
+          showSnackbar("Invelid credentials", "error");
         }
       }
     } finally {
@@ -62,14 +60,13 @@ export const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-    setForgotPassModal(true)
-    // integrate Google login logic here
-  };
 
   if (decoded) {
-   return <Navigate to="/" replace />
+    if (planDetails?.data) {
+      return <Navigate to="/" replace />
+    } else {
+      return <Navigate to="/plans" replace />
+    }
   }
 
   return (
@@ -90,25 +87,9 @@ export const Login = () => {
         </Typography>
       </Box>
 
-      {/* Login Form */}
-      <Box component="form" ref={formRef} onSubmit={handleSubmit} >
-        {/* Google Login */}
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleLogin}
-          sx={{
-            mb: 3,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: 500,
-          }}
-        >
-          Continue with Google
-        </Button>
 
+      <Box component="form" ref={formRef} onSubmit={handleSubmit} >
+        <GoogleSignIn />
         <Divider sx={{ mb: 3 }}>or login with email</Divider>
 
         <TextField

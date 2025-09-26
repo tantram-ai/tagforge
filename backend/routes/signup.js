@@ -35,10 +35,10 @@ router.post('/signup', async (req, res) => {
 
     const isMailSent = await axios.post(
       `${process.env.FIREBASE_BASE_URL}sendOobCode?key=${API_KEY}`,
-      { requestType: "VERIFY_EMAIL", idToken, continueUrl: "http://localhost:5173/login" }
+      { requestType: "VERIFY_EMAIL", idToken, continueUrl: "http://localhost:5173/emailVerification" }
     );
 
-    res.status(200).json({ error: "", code: "SUCCESS", message: "Signup successful! Please verify your email.", data: null })
+    res.status(200).json({ error: "", code: "SUCCESS", message: "Signup successful! Please verify your email.", data: {token:idToken} })
   } catch (err) {
     if (err?.errorInfo?.code === "auth/email-already-exists") {
       return res.status(400).json({ error: err, code: "EMAIL_ALREADY_EXISTS", message: err.message, data: null })

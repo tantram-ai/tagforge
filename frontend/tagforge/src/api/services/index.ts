@@ -1,1 +1,2 @@
-export { getProfile, login, logout, signUp, resendVerificationEmail ,forgotPassword,resetPassword} from "./authServices/authServices";
+export { getProfile, login, logout, signUp, resendVerificationEmail, forgotPassword, resetPassword, googleLogin } from "./authServices/authServices";
+export { getPlans } from "./subscriptionServices/subscriptionServices";
