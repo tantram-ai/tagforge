@@ -1,6 +1,5 @@
 const express = require('express');
-const firebaseAuth = require('../middlewares/firebaseAuth');
-const validateSubscription = require('../middlewares/validateSubscription');
+const { firebaseAuth, validateSubscription } = require('../middlewares');
 const router = express.Router();
 const middlewares = [firebaseAuth, validateSubscription]
 

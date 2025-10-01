@@ -1,4 +1,4 @@
-const sequelize = require('../connections/db/sequelize');
+const { sequelize } = require('../connections');
 const plans = require('./plans')(sequelize);
 const generation = require('./generation')(sequelize);
 const users = require('./users')(sequelize);

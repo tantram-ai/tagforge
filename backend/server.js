@@ -1,9 +1,12 @@
 const express = require("express");
-require('dotenv').config();
+const dotenv = require("dotenv");
+const nodeEnv = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${nodeEnv}` });
 const db = require('./models');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors')
+const cookieParser = require("cookie-parser");
 const generateRoutes = require('./routes/generate');
 const metasRoutes = require('./routes/metas'); // create similarly
 const stripeRoutes = require('./routes/stripe');
@@ -36,7 +39,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
+app.use(cookieParser());
 
 // Routes
 app.use('/api', generateRoutes);

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const firebaseAuth = require('../middlewares/firebaseAuth');
 const { saveMetaSet } = require('../controllers/metasController');
+const { firebaseAuth } = require('../middlewares');
 
 router.post('/metas', firebaseAuth, express.json(), saveMetaSet);
 

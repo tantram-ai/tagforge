@@ -1,24 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Button,
-  TextField,
-  Paper,
-  Stack,
   Switch,
   Grid,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { ComparisonTable, PlanCard } from "./components";
-import { getPlans } from "../../api/services";
-import { useSnackbarStore } from "../../store";
+import { buyPlan, getPlans } from "../../api/services";
+import { useAuthStore, useSnackbarStore } from "../../store";
 import { FeedbackFrom } from "../../shared/components";
 import { useNavigate } from "react-router-dom";
 
@@ -46,16 +35,18 @@ type planType = [{
 export const Plans = () => {
   const [billingCycle, setBillingCycle] = useState<{ key: string, value: string }>({ key: "monthly", value: "month" })
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isSending, setSending] = useState<boolean>(false)
   const { showSnackbar } = useSnackbarStore()
   const [plans, setPlans] = useState<planType>([])
   const navigate = useNavigate()
+  const { setTokenFromCookie, decoded } = useAuthStore()
 
   const getPlanData = async () => {
     setLoading(true)
     try {
       const result = await getPlans();
       if (result.code === "SUCCESS") {
-        setPlans(result.data)
+        setPlans(result?.data)
       }
     } catch (err: any) {
       if (err?.response?.data?.code == "INTERNAL_SERVER") {
@@ -67,11 +58,9 @@ export const Plans = () => {
     }
   }
 
-
   useEffect(() => {
     getPlanData()
   }, [])
-
 
   const handleToggle = () => {
     if (billingCycle?.key === "monthly") {
@@ -85,7 +74,7 @@ export const Plans = () => {
     if (!plans) return [];
 
     return plans.map((item) => {
-      const basePrice = item?.price || 0; // always use original base price
+      const basePrice = item?.price || 0;
       let finalAmount = basePrice;
       let yearlyDiscount = 0;
       let offerDiscount = 0;
@@ -99,14 +88,14 @@ export const Plans = () => {
         finalAmount = yearlyPrice - (yearlyDiscount + offerDiscount);
       } else {
         principleAmount = basePrice
-        const offerDiscount = (item?.offerDescount / 100) * basePrice;
+        offerDiscount = (item?.offerDescount / 100) * basePrice;
         finalAmount = basePrice - offerDiscount;
       }
 
       return {
         ...item,
-        yearlyDiscount:Math.round(yearlyDiscount),
-        offerDiscount:Math.round(offerDiscount),
+        yearlyDiscountAmount: Math.round(yearlyDiscount),
+        offerDiscountAmount: Math.round(offerDiscount),
         principleAmount,
         finalAmount: Math.round(finalAmount),
       };
@@ -114,13 +103,36 @@ export const Plans = () => {
   }, [plans, billingCycle]);
 
 
-
-
+  const setPlan = async (plan: any) => {
+    const payload =
+    {
+      planId: plan?.planId,
+      plan: plan?.name,
+      preferedBillingCycle: billingCycle?.key
+    }
+    try {
+      const result = await buyPlan(payload);
+      
+      if (result.code === "SUCCESS") {
+        setTokenFromCookie()
+        showSnackbar(result?.message, "success");
+        navigate("/dashboard")
+      }
+    } catch (err: any) {
+      showSnackbar(err?.response?.data?.message, "error");
+      setSending(false)
+    } finally {
+      setSending(false)
+    }
+  }
 
   const handleSubscribe = (plan: any) => {
-    navigate("/payments", { state: { plan: plan } })
+    if (plan?.price === 0 && decoded) {
+      setPlan(plan)
+    } else {
+      navigate("/payments", { state: { plan: plan } })
+    }
   };
-
 
   return (
     <Box sx={{ p: { xs: 2, md: 6 } }}>
@@ -163,13 +175,16 @@ export const Plans = () => {
           >
             {getFinalPrice()?.map((plan) => (
               <Box key={plan.name} sx={{ minWidth: { xs: "85%", md: "30%" } }}>
-                <PlanCard plan={plan} billingCycle={billingCycle?.value} onSubscribe={() => handleSubscribe(plan)} />
+                <PlanCard plan={plan}
+                  billingCycle={billingCycle?.value}
+                  onSubscribe={() => handleSubscribe(plan)}
+                  isSending={isSending}
+                />
               </Box>
             ))}
           </Box>
         </Grid>
       </Grid>
-
       <ComparisonTable getFinalPrice={getFinalPrice} />
       <FeedbackFrom />
     </Box>

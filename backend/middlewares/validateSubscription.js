@@ -1,6 +1,6 @@
 const { subscriptionValidator } = require("../utils");
 
-module.exports = validateSubscription = async (req, res, next) => {
+const validateSubscription = async (req, res, next) => {
     const user = req?.user?.dataValues
     const { NOT_SUBSCRIBED, PLAN_EXPIRED, DATA, INTERNAL_SERVER } = subscriptionValidator(user?.uid)
 
@@ -18,3 +18,5 @@ module.exports = validateSubscription = async (req, res, next) => {
         return res.status(500).json({ error: INTERNAL_SERVER, code: "INTERNAL_SERVER", message: "Internal Server Error", data: null });
     }
 }
+
+module.exports = {validateSubscription}

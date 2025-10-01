@@ -32,4 +32,4 @@ async function testConnection() {
 
 testConnection();
 
-module.exports = sequelize;
+module.exports = {sequelize};

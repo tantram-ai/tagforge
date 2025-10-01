@@ -20,7 +20,7 @@ module.exports = subscriptionValidator = async (uid) => {
                     uid: uid,
                     currentPeriodEnd: { [Op.gt]: new Date() }
                 },
-                attributes: ["status", "plan", "currentPeriodStart", "currentPeriodEnd", "id", "PreferedBillingCycle"],
+                attributes: ["status", "plan", "currentPeriodStart", "currentPeriodEnd", "id", "preferedBillingCycle"],
                 include: [
                     {
                         model: plans,

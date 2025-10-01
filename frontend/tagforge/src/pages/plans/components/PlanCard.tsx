@@ -32,10 +32,11 @@ interface Plan {
 interface PlanCardProps {
     plan: Plan;
     onSubscribe: (plan: Plan) => void;
-    billingCycle: string
+    billingCycle: string;
+    isSending:boolean
 }
 
-export const PlanCard = ({ plan, onSubscribe, billingCycle }: PlanCardProps) => {
+export const PlanCard = ({ plan, onSubscribe, billingCycle ,isSending }: PlanCardProps) => {
 
     return (
         <Card
@@ -107,6 +108,9 @@ export const PlanCard = ({ plan, onSubscribe, billingCycle }: PlanCardProps) => 
                     size="large"
                     sx={{ borderRadius: 3 }}
                     onClick={() => onSubscribe(plan)}
+                    loading={isSending}
+                    loadingPosition="end"
+                    disabled={isSending}
                 >
                     {plan.price === 0 ? "Get Started" : "Subscribe Now"}
                 </Button>

@@ -37,6 +37,7 @@ export const useAuthStore = create<AuthState>()(
 
       clearAuth: () => {
         Cookies.remove("token");
+        Cookies.remove("planData");
         set({ planDetails: null, decoded: null });
       },
     }),

@@ -30,6 +30,8 @@ export const PaymentsPage = () => {
     return <Navigate to="/login" replace />;
   }
 
+  console.log(plan,"**")
+
   return (
     <Box
       sx={{
@@ -150,12 +152,12 @@ export const PaymentsPage = () => {
                 Offer ({plan.offerDescount}%)
               </Typography>
               <Typography color="success.main">
-                - {plan.currency} {plan?.offerDiscount}
+                - {plan.currency} {plan?.offerDiscountAmount}
               </Typography>
             </Box>
           )}
 
-          {plan.yearlyDiscount > 0 &&
+          {plan.yearlyDiscountAmount > 0 &&
            
               <Box
                 sx={{
@@ -168,7 +170,7 @@ export const PaymentsPage = () => {
                   Plan discount ({plan.billingCycleDiscount}%)
                 </Typography>
                 <Typography color="success.main">
-                  - {plan.currency} {plan?.yearlyDiscount}
+                  - {plan.currency} {plan?.yearlyDiscountAmount}
                 </Typography>
               </Box>
             }

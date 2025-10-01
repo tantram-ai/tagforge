@@ -1,11 +1,11 @@
-const admin = require('../connections/firebase/firebaseAdmin');
+const { admin } = require('../connections');
 const { users } = require('../models');
 
-module.exports = firebaseAuth = async (req, res, next) => {
+const firebaseAuth = async (req, res, next) => {
   const idToken = req?.cookies?.token || null;
 
   if (!idToken) {
-    return res.status(401).json({ error: err, code: "NO_TOKEN", message: "No auth token", data: null });
+    return res.status(401).json({ error: "", code: "NO_TOKEN", message: "No auth token", data: null });
   }
 
   try {
@@ -29,3 +29,5 @@ module.exports = firebaseAuth = async (req, res, next) => {
     return res.status(401).json({ error: err, code: "INVALID_TOKEN", message: "Invalid auth token", data: null });
   }
 }
+
+module.exports = {firebaseAuth}

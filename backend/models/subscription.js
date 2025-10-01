@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     stripeSubscriptionId: DataTypes.STRING,
     status: { type: DataTypes.ENUM("active", "inactive", "canceled", "expired"), defaultValue: "inactive", },
     plan: DataTypes.STRING,
-    PreferedBillingCycle: { type: DataTypes.ENUM("monthly", "yearly"), defaultValue: "monthly", },
+    preferedBillingCycle: { type: DataTypes.ENUM("monthly", "yearly"), defaultValue: "monthly", },
     currentPeriodStart: DataTypes.DATE,
     currentPeriodEnd: DataTypes.DATE
   }, { tableName: 'Subscription' });

@@ -47,8 +47,13 @@ export const NavigationBar = (props: Props) => {
     const { decoded, clearAuth, planDetails } = useAuthStore()
     const { showSnackbar } = useSnackbarStore()
     const settings = [
-        { item: 'Dashboard', onClick: () => { } },
-        { item: 'Logout', onClick: () => clearAuth() }
+        { item: 'Dashboard', onClick: () => navigate('/dashboard') },
+        {
+            item: 'Logout', onClick: () => {
+                clearAuth();
+                showSnackbar("Logout Successfull", "success")
+            }
+        }
     ];
     const navItems = [
         { item: 'Features', onClick: () => { } },
@@ -231,7 +236,6 @@ export const NavigationBar = (props: Props) => {
                                                     <MenuItem key={setting.item} onClick={() => {
                                                         handleCloseUserMenu
                                                         setting.onClick()
-                                                        showSnackbar("Logout Successfull", "success")
                                                     }}>
                                                         <Typography sx={{ textAlign: 'center' }}>{setting.item}</Typography>
                                                     </MenuItem>
