@@ -1,0 +1,1 @@
+export { TgTable } from "./TgTable";

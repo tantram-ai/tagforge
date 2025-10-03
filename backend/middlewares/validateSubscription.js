@@ -2,7 +2,8 @@ const { subscriptionValidator } = require("../utils");
 
 const validateSubscription = async (req, res, next) => {
     const user = req?.user?.dataValues
-    const { NOT_SUBSCRIBED, PLAN_EXPIRED, DATA, INTERNAL_SERVER } = subscriptionValidator(user?.uid)
+
+    const { NOT_SUBSCRIBED, PLAN_EXPIRED, DATA, INTERNAL_SERVER } = await subscriptionValidator(user?.uid)
 
     if (NOT_SUBSCRIBED) {
         return res.status(400).json({ error: "Subscription not found", code: "NOT_SUBSCRIBED", message: "Please subscribe a plan to start", data: null })
@@ -19,4 +20,4 @@ const validateSubscription = async (req, res, next) => {
     }
 }
 
-module.exports = {validateSubscription}
+module.exports = { validateSubscription }

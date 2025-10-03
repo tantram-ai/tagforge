@@ -10,6 +10,7 @@ let result = {
 }
 
 module.exports = subscriptionValidator = async (uid) => {
+
     try {
         const subscriptionInfo = await subscription.findAll({ where: { uid: uid } })
         if (!subscriptionInfo.length > 0) {
@@ -42,7 +43,7 @@ module.exports = subscriptionValidator = async (uid) => {
         }
         return result
     } catch (error) {
-        result = { ...result, PLAN_EXPIRED: error }
+        result = { ...result, INTERNAL_SERVER: error }
         return result
     }
 }

@@ -1,5 +1,5 @@
 import api from '../../axios'
-import type { forgotPasswordType, loginTypes, resendVerificationEmailType, resetPasswordTypes, signUpTypes } from './types'
+import type { forgotPasswordType, loginTypes, resetPasswordTypes, signUpTypes } from './types'
 import type { responseType } from '../../../globalTypes';
 
 export const signUp = async (data: signUpTypes) => {
@@ -21,7 +21,7 @@ export const getProfile = async () => {
   return res.data;
 };
 
-export const resendVerificationEmail = async (token:string) => {
+export const resendVerificationEmail = async (token: string) => {
   const res = await api.post<responseType>("/resendVerification", token)
   return res.data
 }

@@ -112,7 +112,7 @@ export const Plans = () => {
     }
     try {
       const result = await buyPlan(payload);
-      
+
       if (result.code === "SUCCESS") {
         setTokenFromCookie()
         showSnackbar(result?.message, "success");

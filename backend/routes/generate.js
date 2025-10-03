@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { generate } = require('../controllers/generateController');
-const { firebaseAuth } = require('../middlewares');
+const { firebaseAuth, validateSubscription } = require('../middlewares');
+const { generate } = require('../controllers');
+const middlewares = [firebaseAuth , validateSubscription ]
 
-router.post('/generate', firebaseAuth, express.json(), generate);
+router.post('/generate', middlewares , express.json(), generate);
 
 module.exports = router;

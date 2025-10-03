@@ -1,18 +1,16 @@
 import { Navigate } from "react-router-dom";
-import { useAuthStore, useGuardedRoutesStore, useSnackbarStore } from "../store";
+import { useAuthStore, useGuardedRoutesStore } from "../store";
 
 type ProtectedRouteProps = {
     children: React.ReactNode
 }
 
 export const ProtectedRouteController = ({ children }: ProtectedRouteProps) => {
-    const {decoded, planDetails} = useAuthStore()
-    const {showSnackbar}=useSnackbarStore()
-    
+    const { decoded, planDetails } = useAuthStore()
+
     if (!decoded) {
-        if(!planDetails){
-        showSnackbar("Please subscribe a plan to start","warning")
-        return <Navigate to="/plans" replace />;
+        if (!planDetails) {
+            return <Navigate to="/plans" replace />;
         }
         return <Navigate to="/login" replace />;
     }

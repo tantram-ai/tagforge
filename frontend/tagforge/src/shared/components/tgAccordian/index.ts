@@ -1,0 +1,2 @@
+export { TgAccordian } from "./TgAccordian";
+

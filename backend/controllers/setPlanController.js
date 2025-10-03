@@ -16,7 +16,7 @@ const setPlan = async (req, res) => {
             return addYears(currentDate, planDurationInMonths)
         }
     }
-    
+
     const UpdatedData = {
         ...data,
         currentPeriodStart: currentDate,
@@ -66,4 +66,4 @@ const setPlan = async (req, res) => {
     }
 }
 
-module.exports ={setPlan}
+module.exports = { setPlan }

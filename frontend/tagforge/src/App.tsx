@@ -1,10 +1,9 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ProtectedRouteController, RouteGuard } from "./navigation";
+import { ProtectedRouteController } from "./navigation";
 import { BrandPage } from "./pages/brandPage";
 import { About } from "./pages/about";
 import { Plans } from "./pages/plans";
 import { Login } from "./pages/AuthPages/login";
-import { Dashboard } from "./pages/dashboard";
 import { NavigationBar } from "./shared/components";
 import { SignUp } from "./pages/AuthPages/signUp";
 import { EmailVerification } from "./pages/AuthPages/emailVerification";
@@ -13,6 +12,7 @@ import { Snackbar, Alert } from "@mui/material";
 import { useEffect } from "react";
 import { ChangePassword } from "./pages/AuthPages/changePassword";
 import { PaymentsPage } from "./pages/paymentPage";
+import { Dashboard } from "./pages/dashboard";
 
 
 type AppProps = {
@@ -43,9 +43,7 @@ function App({ toggleTheme, mode }: AppProps) {
           <Route path="/changePassword" element={<ChangePassword />} />
           <Route path="/emailVerification" element={<EmailVerification />} />
           <Route path="/payments" element={<PaymentsPage />} />
-
-
-
+          
           {/* Protected Routes */}
           <Route
             path="/dashboard"
