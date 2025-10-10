@@ -1,0 +1,1 @@
+export { TgTextInput } from "./TgTextInput";

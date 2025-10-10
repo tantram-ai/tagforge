@@ -1,3 +1,7 @@
+export { PremiumBadge } from "./premiumBadge";
+export { TgToggle } from "./tgToggle";
+export { TgSearch } from "./tgSearch";
+export { TgTextInput } from "./tgTextInput";
 export { TgTable } from "./tgTable";
 export { TgAccordian } from "./tgAccordian";
 export { TgTab } from "./tgTabs";

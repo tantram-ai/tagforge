@@ -5,7 +5,12 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 
-export const  TgTab = ()=>{
+type tgTabProps = {
+  tabItemList: any
+  tabComponentList: any
+}
+
+export const TgTab = ({ tabItemList, tabComponentList }: tgTabProps) => {
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -17,18 +22,15 @@ export const  TgTab = ()=>{
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Content" value="1" />
-            <Tab label="Meta" value="2" />
-            <Tab label="Facebook" value="3" />
-            <Tab label="Twitter" value="4" />
-            <Tab label="Linkdin" value="5" />
+            {tabItemList?.map((item: string, index: number) => {
+              return <Tab label={item} value={(index + 1).toString()} />
+            })}
           </TabList>
         </Box>
-        <TabPanel value="1">Item One</TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        {tabComponentList?.map((item: any, index: number) => {
+          return <TabPanel value={(index + 1).toString()}>{item}</TabPanel>
+        })}
+
       </TabContext>
     </Box>
   );

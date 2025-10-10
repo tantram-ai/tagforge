@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const { projects } = require("../../models");
+const { customError } = require("../../utils");
 
 const validateProjectLimit = async (req, res) => {
     const planData = req?.subsciptionData?.data;
@@ -9,18 +10,13 @@ const validateProjectLimit = async (req, res) => {
         where: {
             uid: uid,
             createdAt: {
-                [Op.between]: [planData?.currentPeriodStart, planData?.currentPeriodEnd], // column name should match your model
+                [Op.between]: [planData?.currentPeriodStart, planData?.currentPeriodEnd],
             },
         },
     });
 
     if (projectCount >= planData?.Plan?.projectsLimit) {
-        res.status(400).json({
-            error: "Project limit reached",
-            code: "PROJECT_LIMIT_REACHED",
-            message: "Project limit reached please upgrade the plan",
-            data: null
-        })
+        customError(res,"PROJECT_LIMIT_REACHED","Project limit reached please upgrade the plan")
         return false
     }
     return true

@@ -3,15 +3,12 @@ import { persist } from "zustand/middleware";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-
 interface AuthState {
   decoded: any | null;
   planDetails: any | null
   setTokenFromCookie: () => void;
   clearAuth: () => void;
 }
-
-
 
 export const useAuthStore = create<AuthState>()(
   persist(

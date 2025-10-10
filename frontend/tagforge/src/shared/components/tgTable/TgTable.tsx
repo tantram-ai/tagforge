@@ -28,34 +28,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// function createData(
-//   name: string,
-//   calories: number,
-//   fat: number,
-//   carbs: number,
-//   protein: number,
-// ) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData('Eclair', 262, 16.0, 24, 6.0),
-//   createData('Cupcake', 305, 3.7, 67, 4.3),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9),
-// ];
-
 const rows = [
-    { kw: "ai meta tags", volume: 25000, cpc: "₹21.49", comp: 0.35, used: true },
-    { kw: "meta tags", volume: 5000, cpc: "₹10.23", comp: 0.42, used: false },
-    { kw: "seo", volume: 3000, cpc: "₹1.08", comp: 0.12, used: false },
-    { kw: "meta tag generator", volume: 1000, cpc: "₹0.41", comp: 0.25, used: true },
-  ];
+  { kw: "ai meta tags", volume: 25000, cpc: "₹21.49", comp: 0.35, used: true },
+  { kw: "meta tags", volume: 5000, cpc: "₹10.23", comp: 0.42, used: false },
+  { kw: "seo", volume: 3000, cpc: "₹1.08", comp: 0.12, used: false },
+  { kw: "meta tag generator", volume: 1000, cpc: "₹0.41", comp: 0.25, used: true },
+];
 
-export const TgTable=()=>{
+export const TgTable = () => {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{
+      overflowX: "auto",
+      // 🔹 Custom horizontal & vertical scrollbars
+      "&::-webkit-scrollbar": {
+        height: "2px", // horizontal scrollbar height
+        width: "2px",  // vertical scrollbar width
+      },
+      "&::-webkit-scrollbar-track": {
+        background: "transparent",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#888",
+        borderRadius: "8px",
+      },
+      "&::-webkit-scrollbar-thumb:hover": {
+        backgroundColor: "#555",
+      },
+      // Firefox support
+      // scrollbarWidth: "thin",
+      // scrollbarColor: "#888 transparent",
+    }}>
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>

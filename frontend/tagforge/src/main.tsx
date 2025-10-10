@@ -1,8 +1,9 @@
 import { StrictMode, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
 import { ThemeProvider, CssBaseline, useMediaQuery } from "@mui/material";
-import { lightTheme,darkTheme } from "./shared/hooks/theme.js";
+import { lightTheme, darkTheme } from "./shared/hooks/theme.js";
+import { App } from "./App.js";
+
 
 function Main() {
   // Detect system preference
@@ -11,7 +12,7 @@ function Main() {
   // Track if user has chosen manually
   const [mode, setMode] = useState<"light" | "dark">(
     (localStorage.getItem("theme") as "light" | "dark") ||
-      (prefersDarkMode ? "dark" : "light")
+    (prefersDarkMode ? "dark" : "light")
   );
 
   // Update mode if system theme changes and user hasn't chosen manually

@@ -1,6 +1,13 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { cookieSettings, subscriptionValidator } = require('../utils');
+const {
+    cookieSettings,
+    subscriptionValidator,
+    internalServer,
+    invelidToken,
+    verifyEmail,
+    successWithMessage,
+    customError } = require('../utils');
 
 const API_KEY = process.env.FIREBASE_API_KEY
 
@@ -15,15 +22,15 @@ const validateAndCreateSession = async (res, idToken, uid) => {
     res.cookie("planData", planData, cookieSettings);
 
     if (NOT_SUBSCRIBED) {
-        return res.status(400).json({ error: "Subscription not found", code: "NOT_SUBSCRIBED", message: "Please subscribe a plan to start", data: null })
+        return customError(res, "NOT_SUBSCRIBED", "Please subscribe a plan to start")
     }
     if (PLAN_EXPIRED) {
-        return res.status(400).json({ error: "Plan expired", code: "PLAN_EXPIRED", message: "Please update the plan to continue", data: null })
+        return customError(res, "PLAN_EXPIRED", "Please update the plan to continue")
     }
     if (INTERNAL_SERVER) {
-        return res.status(500).json({ error: INTERNAL_SERVER, code: "INTERNAL_SERVER", message: "Internal Server Error", data: null });
+        return internalServer(INTERNAL_SERVER, res)
     }
-    return res.status(200).json({ error: "", code: "SUCCESS", message: "Succesfully logged in", data: null })
+    return successWithMessage(res, "Succesfully logged in")
 }
 
 const checkverificationStatus = async (res, idToken) => {
@@ -36,9 +43,9 @@ const checkverificationStatus = async (res, idToken) => {
     if (!user.emailVerified) {
         const isMailSent = await axios.post(
             `${process.env.FIREBASE_BASE_URL}sendOobCode?key=${API_KEY}`,
-            { requestType: "VERIFY_EMAIL", idToken, continueUrl:  `${process.env.BASE_URL}/emailVerification` }
+            { requestType: "VERIFY_EMAIL", idToken, continueUrl: `${process.env.BASE_URL}/emailVerification` }
         );
-        return res.status(403).json({ error: "", code: "VERIFY_EMAIL", message: "Please verify your email first", data: { token: idToken } })
+        return verifyEmail(res, idToken)
     }
     return user
 }
@@ -61,16 +68,16 @@ const login = async (req, res) => {
         await validateAndCreateSession(res, idToken, user.localId)
 
     } catch (err) {
-        return res.status(400).json({ error: err, code: err?.code, message: err.message, data: null })
+        return internalServer(err, res)
     }
 }
 
 const googleLogin = async (req, res) => {
     try {
 
-        const authHeader = req.headers.authorization;
+        const authHeader = req?.headers?.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({ error: err, code: "NO_TOKEN", message: "No auth token", data: null });
+            return invelidToken(res)
         }
 
         const idToken = authHeader.split(" ")[1]
@@ -81,7 +88,7 @@ const googleLogin = async (req, res) => {
         await validateAndCreateSession(res, idToken, user.localId)
 
     } catch (err) {
-        return res.status(400).json({ error: err, code: "INTERNAL_SERVER", message: err.message, data: null })
+        return internalServer(err, res)
     }
 }
 

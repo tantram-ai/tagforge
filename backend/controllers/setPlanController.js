@@ -1,6 +1,6 @@
 const { subscription } = require("../models")
 const { addMonths, addYears } = require("date-fns");
-const { subscriptionValidator, cookieSettings } = require("../utils");
+const { subscriptionValidator, cookieSettings, internalServer, successWithMessage } = require("../utils");
 const planDurationInMonths = 1;
 const jwt = require("jsonwebtoken");
 
@@ -26,16 +26,11 @@ const setPlan = async (req, res) => {
     }
 
     try {
-        const isPlancreated = await subscription.create(UpdatedData)
-        if (isPlancreated) {
+        const isPlanCreated = await subscription.create(UpdatedData)
+        if (isPlanCreated) {
             const { DATA, INTERNAL_SERVER } = await subscriptionValidator(uid)
             if (INTERNAL_SERVER) {
-                return res.status(500).json({
-                    error: INTERNAL_SERVER,
-                    code: "INTERNAL_SERVER",
-                    message: "Internal Server Error",
-                    data: null
-                });
+                return internalServer(INTERNAL_SERVER, res)
             }
             const planData = jwt.sign(DATA, process.env.JWT_SECRET, {
                 expiresIn: "1h",
@@ -43,26 +38,12 @@ const setPlan = async (req, res) => {
 
             res.cookie("planData", planData, cookieSettings);
 
-            return res.status(200).json({
-                error: "",
-                code: "SUCCESS",
-                message: "Plan subscribed successfully",
-                data: UpdatedData
-            })
+            return successWithMessage(res, "Plan subscribed successfully")
         } else {
-            return res.status(500).json({
-                error: "Internal Server error",
-                code: "INTERNAL_SERVER",
-                message: "Internal Server error",
-                data: null
-            })
+            return internalServer(null, res)
         }
     } catch (error) {
-        return res.status(500).json({
-            error: error, code: "INTERNAL_SERVER",
-            message: "Internal Server error",
-            data: null
-        })
+        return internalServer(error, res)
     }
 }
 

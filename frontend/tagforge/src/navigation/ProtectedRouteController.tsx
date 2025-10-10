@@ -9,29 +9,35 @@ export const ProtectedRouteController = ({ children }: ProtectedRouteProps) => {
     const { decoded, planDetails } = useAuthStore()
 
     if (!decoded) {
-        if (!planDetails) {
-            return <Navigate to="/plans" replace />;
-        }
         return <Navigate to="/login" replace />;
     }
+    if (!planDetails?.data) {
+        return <Navigate to="/plans" replace />;
+    }
 
-    return children;
+    return (
+        <>
+            {children}
+        </>
+    )
 };
 
-type routeGuardeProps = {
-    children: React.ReactNode,
-    path: string
-    redirectTo: string
-}
+// type routeGuardeProps = {
+//     children: React.ReactNode,
+//     path: string
+//     redirectTo: string
+// }
 
-export const RouteGuard = ({ children, path, redirectTo }: routeGuardeProps) => {
-    const { routeName } = useGuardedRoutesStore()
-    if (path === routeName) {
-        return children
-    } else {
-        return <Navigate to={redirectTo} replace />;
-    }
-}
+// export const RouteGuard = ({ children, path, redirectTo }: routeGuardeProps) => {
+//     const { routeName } = useGuardedRoutesStore()
+//     if (path === routeName) {
+//         return (
+//             { children }
+//         )
+//     } else {
+//         return <Navigate to={redirectTo} replace />;
+//     }
+// }
 
 
 

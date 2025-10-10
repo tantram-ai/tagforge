@@ -1,192 +1,159 @@
 import React, { useState } from "react";
 import {
   Box,
-  TextField,
-  MenuItem,
-  Typography,
   Button,
   Stack,
   useTheme,
-  Paper,
 } from "@mui/material";
+import { PremiumBadge, TgTextInput } from "../../../shared/components";
+import { useAuthStore } from "../../../store";
 
-export const InputForm = () => {
+type inputFormProps = {
+  formData: any
+  handleChange: any
+  handleSubmit: any
+  generatingKeywords: boolean
+}
+
+export const InputForm = ({ handleChange, formData, handleSubmit, generatingKeywords = false }: inputFormProps) => {
   const theme = useTheme();
+  const { planDetails } = useAuthStore()
+  const planInfo = planDetails?.data?.Plan
 
-  const [formData, setFormData] = useState({
-    businessBrief: "",
-    userKeyword: "",
-    pageType: "",
-    tone: "",
-    length: "",
-    goal: "",
-    cta: "",
-    competitors: "",
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-  };
+  const planWiseLength = (contentLengthByPlan: string) => {
+    const lengths = ["short", "medium", "long"]
+    const index = lengths.indexOf(contentLengthByPlan)
+    return lengths.slice(0, index + 1)
+  }
 
   return (
-   
-      <Box component="form" onSubmit={handleSubmit}>
-        <Stack spacing={1.5}>
-          {/* Business Brief */}
-          <TextField
-            label="Business Brief"
-            name="businessBrief"
-            value={formData.businessBrief}
-            onChange={handleChange}
-            fullWidth
-            required
-            multiline
-            rows={2}
-            variant="standard"
-            placeholder="Describe your business..."
-          />
 
-          {/* User Keyword */}
-          <TextField
-            label="Main Keyword"
-            name="userKeyword"
-            value={formData.userKeyword}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
-          />
+    <Box>
+      <Stack spacing={1.5}>
+        {/* Business Brief */}
+        <TgTextInput
+          label="Business Brief"
+          name="businessBrief"
+          value={formData?.businessBrief}
+          onChange={handleChange}
+          required={true}
+          multiline={true}
+          rows={2}
+          placeholder="Describe your business..."
+        />
 
-          {/* Page Type */}
-          <TextField
-            select
-            label="Page Type"
-            name="pageType"
-            value={formData.pageType}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
-          >
-            {["blog", "landing", "product", "service", "faq"].map((opt) => (
-              <MenuItem key={opt} value={opt}>
-                {opt}
-              </MenuItem>
-            ))}
-          </TextField>
+        {/* User Keyword */}
 
-          {/* Tone */}
-          <TextField
-            select
-            label="Tone"
-            name="tone"
-            value={formData.tone}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
+        <TgTextInput
+          label="Main Keyword"
+          name="userKeyword"
+          value={formData?.userKeyword}
+          onChange={handleChange}
+          required={true}
+        />
 
-          >
-            {[
-              "professional",
-              "friendly",
-              "conversational",
-              "persuasive",
-              "storytelling",
-            ].map((opt) => (
-              <MenuItem key={opt} value={opt}>
-                {opt}
-              </MenuItem>
-            ))}
-          </TextField>
+        {/* Page Type */}
 
-          {/* Length */}
-          <TextField
-            select
-            label="Content Length"
-            name="length"
-            value={formData.length}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
-          >
-            {["short", "medium", "long"].map((opt) => (
-              <MenuItem key={opt} value={opt}>
-                {opt}
-              </MenuItem>
-            ))}
-          </TextField>
+        <TgTextInput
+          select={true}
+          label="Page Type"
+          name="pageType"
+          value={formData?.pageType}
+          onChange={handleChange}
+          required={true}
+          list={["blog", "landing", "product", "service", "faq"]}
+        />
 
-          {/* Goal */}
-          <TextField
-            select
-            label="Goal"
-            name="goal"
-            value={formData.goal}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
+        {/* Tone */}
 
-          >
-            {["inform", "sell", "educate", "capture_leads"].map((opt) => (
-              <MenuItem key={opt} value={opt}>
-                {opt.replace("_", " ")}
-              </MenuItem>
-            ))}
-          </TextField>
+        <TgTextInput
+          select={true}
+          label="Tone"
+          name="tone"
+          value={formData.tone}
+          onChange={handleChange}
+          required={true}
+          list={[
+            "professional",
+            "friendly",
+            "conversational",
+            "persuasive",
+            "storytelling",
+          ]}
+        />
 
-          {/* CTA */}
-          <TextField
-            label="CTA (Call to Action)"
-            name="cta"
-            value={formData.cta}
-            onChange={handleChange}
-            fullWidth
-            variant="standard"
-            
-          />
+        {/* Length */}
 
-          {/* Competitors */}
-          <TextField
-            label="Competitors"
-            name="competitors"
+        <TgTextInput
+          select={true}
+          label="Content Length"
+          name="length"
+          value={formData.length}
+          onChange={handleChange}
+          required={true}
+          list={planWiseLength(planInfo?.maxContentLength)}
+        />
+
+
+        {/* Goal */}
+
+        <TgTextInput
+          select={true}
+          label="Goal"
+          name="goal"
+          value={formData.goal}
+          onChange={handleChange}
+          required={true}
+          list={["inform", "sell", "educate", "capture_leads"]}
+        />
+
+        {/* CTA */}
+        <TgTextInput
+          label="CTA (Call to Action)"
+          name="cta"
+          value={formData.cta}
+          onChange={handleChange}
+          hidden={false}
+        />
+
+        {/* Competitors */}
+        <PremiumBadge hidden={planInfo?.features?.competitorAnalysis}>
+          <TgTextInput
+            label="Competitors URL"
+            name="competitorsUrl"
             value={formData.competitors}
             onChange={handleChange}
-            fullWidth
-            multiline
-            rows={2}
-            variant="standard"
-
+            disabled={!planInfo?.features?.competitorAnalysis}
           />
+        </PremiumBadge>
 
-          {/* Submit */}
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              py: 1.3,
-              borderRadius: 2,
-              fontWeight: 600,
-              textTransform: "none",
-              backgroundColor: theme.palette.primary.main,
-              "&:hover": {
-                backgroundColor: theme.palette.primary.dark,
-              },
-            }}
-          >
-            Generate Content
-          </Button>
-        </Stack>
-      </Box>
- 
+
+        {/* Submit */}
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            py: 1.3,
+            borderRadius: 2,
+            fontWeight: 600,
+            textTransform: "none",
+            backgroundColor: theme.palette.primary.main,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          }}
+          onClick={handleSubmit}
+          disabled={generatingKeywords}
+          loading={generatingKeywords}
+          loadingPosition="end"
+        >
+          Generate Content
+        </Button>
+      </Stack>
+    </Box>
+
   );
 };
 

@@ -1,10 +1,11 @@
 const { admin } = require('../connections');
 const { users } = require('../models');
+const { invelidToken } = require('../utils');
 
 const firebaseAuth = async (req, res, next) => {
   const idToken = req?.cookies?.token || null;
   if (!idToken) {
-    return res.status(401).json({ error: "", code: "NO_TOKEN", message: "No auth token", data: null });
+    return invelidToken(res)
   }
 
   try {
@@ -24,7 +25,7 @@ const firebaseAuth = async (req, res, next) => {
     req.firebaseUser = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ error: err, code: "INVALID_TOKEN", message: "Invalid auth token", data: null });
+    return invelidToken()
   }
 }
 

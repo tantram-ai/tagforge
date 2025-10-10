@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { successWithMessage, customError } = require("../utils");
 const API_KEY = process.env.FIREBASE_API_KEY
 
 
@@ -14,9 +15,9 @@ const forgotPassword = async (req, res) => {
                 continueUrl: `${process.env.BASE_URL}/changePassword`,
             }
         );
-        return res.status(200).json({ error: "", code: "SUCCESS", message: "Password reset email sent. Please check your inbox.", data: null })
+        return successWithMessage(res, "Password reset email sent. Please check your inbox.")
     } catch (err) {
-        res.status(400).json({ error: err, code: "INTERNAL_SERVER", message: err.response?.data?.error?.message || err.message, data: null })
+        return customError(res, "INTERNAL_SERVER", err.response?.data?.error?.message || err.message)
     }
 }
 
@@ -31,9 +32,9 @@ const resetPassword = async (req, res) => {
                 newPassword,
             }
         );
-        return res.status(200).json({ error: "", code: "SUCCESS", message: "Password has been reset successfully.", data: null })
+        return successWithMessage(res, "Password has been reset successfully.")
     } catch (err) {
-        return res.status(400).json({ error: "", code: "INTERNAL_SERVER", message: err.response?.data?.error?.message || err.message, data: null })
+        return customError(res, "INTERNAL_SERVER", err.response?.data?.error?.message || err.message)
     }
 }
 

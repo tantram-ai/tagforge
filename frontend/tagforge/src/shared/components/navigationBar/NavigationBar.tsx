@@ -31,13 +31,14 @@ interface Props {
     children?: React.ReactNode
     toggleTheme: any
     mode: string
+    isDashboard?: boolean
 }
 
 const drawerWidth = 240;
 
 export const NavigationBar = (props: Props) => {
 
-    const { window, children, toggleTheme, mode } = props;
+    const { window, children, toggleTheme, mode, isDashboard } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate();
@@ -102,6 +103,24 @@ export const NavigationBar = (props: Props) => {
         }
     }
 
+    const dynamicNavBar = !isDashboard ?
+        {
+            borderRadius: '20px',
+            width: '90%',
+            right: '5%',
+            top: '5%',
+            "& .MuiToolbar-root": {
+                minHeight: 60,
+            },
+        } :
+        {
+            "& .MuiToolbar-root": {
+                minHeight: 50,
+            },
+            borderBottomLeftRadius:'10px',
+            borderBottomRightRadius:'10px',
+        }
+
 
     return (
         <>
@@ -113,18 +132,11 @@ export const NavigationBar = (props: Props) => {
                         color: theme.palette.text.primary,
                         boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
                         borderBottom: `1px solid ${theme.palette.divider}`,
-                        borderRadius: '20px',
-                        width: '90%',
-                        right: '5%',
-                        top: '5%',
-                        "& .MuiToolbar-root": {
-                            minHeight: 60,
-                        },
+                        ...dynamicNavBar,
                     })}>
                     <Toolbar>
                         <Grid container sx={{ width: '100%' }}>
                             <Grid size={4} >
-
                                 <IconButton
                                     color="inherit"
                                     aria-label="open drawer"
@@ -150,7 +162,7 @@ export const NavigationBar = (props: Props) => {
                             </Grid>
 
                             <Grid size={4} container justifyContent="center">
-                                <Box sx={{ display: { xs: 'none', sm: 'block' }, mt: 0.4 }}>
+                                {!isDashboard && <Box sx={{ display: { xs: 'none', sm: 'block' }, mt: 0.4 }}>
                                     {navItems.map((item) => (
                                         <Button key={item.item} onClick={item?.onClick} sx={(theme) => ({
                                             color: theme.palette.text.primary,
@@ -160,7 +172,7 @@ export const NavigationBar = (props: Props) => {
                                             {item?.item}
                                         </Button>
                                     ))}
-                                </Box>
+                                </Box>}
                             </Grid>
 
                             <Grid size={4} container justifyContent="flex-end" >
@@ -267,8 +279,7 @@ export const NavigationBar = (props: Props) => {
                     </Drawer>
                 </nav>
             </Box>
-            <Box component="main" sx={{ p: 3 }}>
-                <Toolbar />
+            <Box >
                 {children}
             </Box>
         </>

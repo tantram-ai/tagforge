@@ -1,5 +1,4 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ProtectedRouteController } from "./navigation";
 import { BrandPage } from "./pages/brandPage";
 import { About } from "./pages/about";
 import { Plans } from "./pages/plans";
@@ -13,6 +12,7 @@ import { useEffect } from "react";
 import { ChangePassword } from "./pages/AuthPages/changePassword";
 import { PaymentsPage } from "./pages/paymentPage";
 import { Dashboard } from "./pages/dashboard";
+import { ProtectedRouteController } from "./navigation";
 
 
 type AppProps = {
@@ -20,7 +20,7 @@ type AppProps = {
   mode: "light" | "dark";
 };
 
-function App({ toggleTheme, mode }: AppProps) {
+export const App = ({ toggleTheme, mode }: AppProps) => {
   const { open, message, severity, closeSnackbar } = useSnackbarStore();
   const { setTokenFromCookie } = useAuthStore();
 
@@ -43,13 +43,15 @@ function App({ toggleTheme, mode }: AppProps) {
           <Route path="/changePassword" element={<ChangePassword />} />
           <Route path="/emailVerification" element={<EmailVerification />} />
           <Route path="/payments" element={<PaymentsPage />} />
-          
+
+
+
           {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
               <ProtectedRouteController>
-                <Dashboard />
+              <NavigationBar toggleTheme={toggleTheme} mode={mode} isDashboard={true}><Dashboard /></NavigationBar>
               </ProtectedRouteController>
             }
           />
@@ -80,4 +82,3 @@ function App({ toggleTheme, mode }: AppProps) {
   )
 }
 
-export default App

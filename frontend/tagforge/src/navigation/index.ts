@@ -1,1 +1,1 @@
-export { ProtectedRouteController,RouteGuard} from "./ProtectedRouteController";
+export { ProtectedRouteController } from "./ProtectedRouteController";

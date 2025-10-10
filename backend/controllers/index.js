@@ -1,12 +1,12 @@
 const { generate } = require("./aiGenerateController");
 const { forgotPassword, resetPassword } = require("./forgotPasswordController");
 const { getPlans } = require("./getPlansController");
+const { generateKeywords } = require("./keywordController");
 const { login, googleLogin } = require("./loginController");
 const { createProject, getProjectList } = require("./projectController");
 const { setPlan } = require("./setPlanController");
 const { signup } = require("./signUpController");
 const { resendVerificationMail } = require("./verificationMailController");
-
 module.exports = {
     setPlan,
     login,
@@ -18,5 +18,6 @@ module.exports = {
     signup,
     generate,
     createProject,
-    getProjectList
+    getProjectList,
+    generateKeywords
 }
