@@ -1,6 +1,19 @@
 // src/theme.js
 import { createTheme } from "@mui/material/styles";
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    customBackground?: {
+      activeButton?: string;
+    };
+  }
+  interface PaletteOptions {
+    customBackground?: {
+      activeButton?: string;
+    };
+  }
+}
+
 const lightTheme = createTheme({
   palette: {
     mode: "light",
@@ -17,6 +30,9 @@ const lightTheme = createTheme({
     text: {
       primary: "#000000",
       secondary: "#555555",
+    },
+    customBackground: {
+      activeButton: "#e3f2fd",
     },
   },
 });
@@ -37,6 +53,9 @@ const darkTheme = createTheme({
     text: {
       primary: "#ffffff",
       secondary: "#aaaaaa",
+    },
+    customBackground: {
+      activeButton: "#e3f2fd",
     },
   },
 });

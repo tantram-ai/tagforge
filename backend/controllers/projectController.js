@@ -1,5 +1,5 @@
 const { validateProjectLimit } = require("../middlewares");
-const { projects } = require("../models");
+const { projects, keywords, inputs, generation } = require("../models");
 const { successWithMessage, internalServer, fetchSuccess } = require("../utils");
 
 const createProject = async (req, res) => {
@@ -24,15 +24,38 @@ const createProject = async (req, res) => {
 const getProjectList = async (req, res) => {
     const uid = req?.firebaseUser?.uid;
     try {
-        const projectsData = await projects.findAll({ where: { uid }, raw: true })
-        if (projectsData?.length > 0) {
-            return fetchSuccess(res, projectsData)
+        const projectData = await projects.findAll({
+            where: { uid },
+            attribute: ["projectId", "name", "status", "suggestedKwGenerateCount"],
+            include: [
+                {
+                    model: keywords,
+                    attributes: ["keywordId", "phrase", "selected", "suggested"],
+                },
+                {
+                    model: inputs,
+                    attributes: ["inputId", "businessBrief", "userKeyword", "pageType", "tone",
+                        "length", "goal", "cta", "competitors", "planId"],
+                },
+                {
+                    model: generation,
+                    attributes: ["id", "seoContent", "metaHtml"],
+                },
+            ],
+            order: [['createdAt', 'DESC']],
+            raw: false,
+        })
+        if (projectData.length > 0) {
+            return fetchSuccess(res, projectData)
+        } else {
+            return fetchSuccess(res, [])
         }
     } catch (error) {
         return internalServer(error, res)
     }
-
 }
+
+
 
 
 module.exports = { createProject, getProjectList }

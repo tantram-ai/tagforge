@@ -9,18 +9,20 @@ type TgAccordianProp = {
     children?: React.ReactNode,
     index: number,
     expanded: boolean,
-    onChange?: any
+    onChange?: any,
+    active?:boolean
 }
 
-export const TgAccordian = ({ data, children, index = 0, expanded = false, onChange }: TgAccordianProp) => {
+export const TgAccordian = ({ data, children, index = 0, active=false, expanded = false, onChange }: TgAccordianProp) => {
     return (
-        <Accordion expanded={expanded} onChange={onChange}>
+        <Accordion expanded={expanded} onChange={onChange} sx={{backgroundColor:active?"#263238":"",borderRadius:2}}>
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`panel${index + 1}-content`}
                 id={`panel${index + 1}-header`}
+                
             >
-                <Typography component="span" fontWeight="bold">{data?.name}</Typography>
+                <Typography component="span" fontWeight="bold" sx={{color:"#ffff"}}>{data?.name}</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 {children}

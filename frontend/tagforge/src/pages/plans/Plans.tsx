@@ -149,7 +149,7 @@ export const Plans = () => {
           color="success.main"
           sx={{ mt: 1, fontWeight: "bold" }}
         >
-          🎉 Get {plans[0]?.billingCycleDiscount}% discount with annual subscription plans!
+          🎉 Get {plans[1]?.billingCycleDiscount}% discount with annual subscription plans!
         </Typography>
         <Switch
           checked={billingCycle?.key === "yearly"}

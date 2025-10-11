@@ -29,7 +29,7 @@ module.exports = subscriptionValidator = async (uid) => {
                             "keywordsPerProject",
                             "aiGenerations", "maxContentLength",
                             "billingCycle", "features", "offerTitle",
-                            "billingCycleDiscount", "billingCycle"],
+                            "billingCycleDiscount", "billingCycle", "keywordSuggestionPerProject"],
                     }
                 ],
                 order: [[plans, "price", "DESC"]],

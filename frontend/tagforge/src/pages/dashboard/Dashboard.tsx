@@ -8,7 +8,7 @@ import { createProject, getKeywords, getProjects } from '../../api/services'
 export const Dashboard = () => {
   const { planDetails } = useAuthStore()
   const planInfo = planDetails?.data?.Plan
-  const [expanded, setExpended] = useState<string | false>(false)
+  const [expanded, setExpended] = useState<string | false | true>(false)
   const [createProjectModal, setCreateProjectModal] = useState<boolean>(false)
   const [projectName, setProjectname] = useState<string>("")
   const { showSnackbar } = useSnackbarStore()
@@ -17,16 +17,7 @@ export const Dashboard = () => {
   const [generatingKeywords, setGeneratingKeywords] = useState<boolean>(false)
   const [suggestedKeywords, setSuggestedKeywords] = useState([])
   const [projects, setprojects] = useState<any>([])
-  const [formData, setFormData] = useState({
-    businessBrief: "",
-    userKeyword: "",
-    pageType: "",
-    tone: "",
-    length: "",
-    goal: "",
-    cta: "",
-    competitors: "",
-  });
+  const [activeProjectIndex, setActivePorjectIndex] = useState<number>(0)
 
   const tabItemList = ["Content", "Meta", "Facebook", "Twitter", "Linkdin"]
   const tabComponentList = [
@@ -37,13 +28,7 @@ export const Dashboard = () => {
     <Typography>Linkdin</Typography>,
   ]
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (projectId: string) => {
+  const handleSubmit = async (formData: any, projectId: string) => {
     setGeneratingKeywords(true)
     try {
       const result = await getKeywords({ ...formData, promptType: "KEYWORD", projectId: projectId });
@@ -52,11 +37,14 @@ export const Dashboard = () => {
         setGeneratingKeywords(false)
       }
     } catch (err: any) {
+      showSnackbar(err?.response?.data?.message, "error");
       setGeneratingKeywords(false)
     } finally {
       setGeneratingKeywords(false)
     }
   };
+
+
 
   const getProjectList = async () => {
     setFetchingProjects(true)
@@ -64,6 +52,7 @@ export const Dashboard = () => {
       const result = await getProjects();
       if (result.code === "SUCCESS") {
         setprojects(result?.data)
+        suggestedKeywordList(result?.data)
         setFetchingProjects(false)
       }
     } catch (err: any) {
@@ -104,8 +93,23 @@ export const Dashboard = () => {
     }
   }
 
+  const jsonToArray = (list: string) => {
+    let cleaned = list.replace(/```json|```/g, "").trim();
+    return JSON.parse(cleaned)
+  }
+
+  const suggestedKeywordList = (allProjectData: any) => {
+    const keywords = allProjectData[activeProjectIndex]?.Keywords || []
+    const suggestedKeywords = keywords?.find((item: any) => item?.suggested)
+    setSuggestedKeywords(jsonToArray(suggestedKeywords?.phrase))
+  }
+
+
   useEffect(() => {
     getProjectList()
+    if (activeProjectIndex === 0) {
+      setExpended("panel0")
+    }
   }, [])
 
   const scrollViewComanStyle = {
@@ -131,6 +135,9 @@ export const Dashboard = () => {
     console.log('Searching for:', query);
   };
 
+
+
+
   return (
     <Paper
       elevation={4}
@@ -152,18 +159,21 @@ export const Dashboard = () => {
             </ListItem>
             <Divider variant="middle" component="li" sx={{ my: 1 }} />
             <ListItem>
-              <Box width="100%">
+              <Box width="100%" >
                 {projects?.length > 0 && projects?.map((item: any, index: number) => {
                   return (
                     <TgAccordian
+                      active={activeProjectIndex === index}
                       data={item}
                       index={index}
                       expanded={expanded === `panel${index}`}
-                      onChange={() => setExpended(expanded === `panel${index}` ? false : `panel${index}`)}>
+                      onChange={() => {
+                        setExpended(expanded === `panel${index}` ? false : `panel${index}`)
+                        setActivePorjectIndex(index)
+                      }}>
                       <InputForm
-                        handleChange={handleChange}
-                        formData={formData}
-                        handleSubmit={() => handleSubmit(item?.projectId)}
+                        defaultData={item?.Input}
+                        handleSubmit={(formData: any) => handleSubmit(formData, item?.projectId)}
                         generatingKeywords={generatingKeywords}
                       />
                     </TgAccordian>
@@ -185,9 +195,9 @@ export const Dashboard = () => {
               </Typography>
             </ListItem>
             <Divider variant="middle" component="li" />
-            <Box sx={{mt:1,mx:1}}>
+            <Box sx={{ mt: 1, mx: 1 }}>
               <PremiumBadge hidden={false}>
-              <TgToggle disabled={!planInfo?.features?.competitorAnalysis}/>
+                <TgToggle disabled={!planInfo?.features?.competitorAnalysis} />
               </PremiumBadge>
             </Box>
             <TgSearch onSearch={handleSearch} />

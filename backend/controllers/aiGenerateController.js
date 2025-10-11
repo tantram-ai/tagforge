@@ -26,14 +26,11 @@ const generate = async (req, res) => {
         //     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` }
         // });
         // const text = resp.data.output?.[0]?.content?.[0]?.text || "";
-        let cleaned = mockData
-          .replace(/```json|```/g, "") 
-          .trim();
-        text = JSON.parse(cleaned)
-        return fetchSuccess(res, { text })
+
+        return mockData
 
     } catch (error) {
-        return internalServer(error, res)
+        throw error
     }
 }
 

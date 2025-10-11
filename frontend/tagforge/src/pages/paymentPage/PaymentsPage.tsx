@@ -149,7 +149,7 @@ export const PaymentsPage = () => {
               }}
             >
               <Typography color="secondary">
-                Offer ({plan.offerDescount}%)
+                Offer : {plan?.offerTitle} ({plan.offerDescount}%)
               </Typography>
               <Typography color="success.main">
                 - {plan.currency} {plan?.offerDiscountAmount}

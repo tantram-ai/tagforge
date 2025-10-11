@@ -46,5 +46,6 @@ module.exports = {
   keywords,
   metaset,
   subscription,
-  plans
+  plans,
+  generation
 };

@@ -30,6 +30,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
+    keywordSuggestionPerProject:{
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     aiGenerations: {
       type: DataTypes.INTEGER,
       allowNull: true
@@ -71,6 +75,7 @@ module.exports = (sequelize) => {
           currency: "INR",
           projectsLimit: 1,
           keywordsPerProject: 20,
+          keywordSuggestionPerProject: 2,
           aiGenerations: 2,
           maxContentLength: "short",
           offerDescount: 0,
@@ -90,6 +95,7 @@ module.exports = (sequelize) => {
           currency: "INR",
           projectsLimit: 5,
           keywordsPerProject: 100,
+          keywordSuggestionPerProject: 5,
           aiGenerations: 20,
           maxContentLength: "medium",
           offerDescount: 0,
@@ -109,6 +115,7 @@ module.exports = (sequelize) => {
           currency: "INR",
           projectsLimit: 20,
           keywordsPerProject: 500,
+          keywordSuggestionPerProject: 10,
           aiGenerations: 100,
           maxContentLength: "long",
           billingCycle: "monthly",
@@ -130,6 +137,7 @@ module.exports = (sequelize) => {
           currency: "INR",
           projectsLimit: -1, // unlimited
           keywordsPerProject: 2000,
+          keywordSuggestionPerProject: 15,
           aiGenerations: 500,
           maxContentLength: "long",
           billingCycle: "monthly",

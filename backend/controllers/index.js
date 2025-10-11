@@ -7,6 +7,7 @@ const { createProject, getProjectList } = require("./projectController");
 const { setPlan } = require("./setPlanController");
 const { signup } = require("./signUpController");
 const { resendVerificationMail } = require("./verificationMailController");
+
 module.exports = {
     setPlan,
     login,
@@ -19,5 +20,5 @@ module.exports = {
     generate,
     createProject,
     getProjectList,
-    generateKeywords
+    generateKeywords,
 }

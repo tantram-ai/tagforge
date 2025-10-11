@@ -9,18 +9,30 @@ import { PremiumBadge, TgTextInput } from "../../../shared/components";
 import { useAuthStore } from "../../../store";
 
 type inputFormProps = {
-  formData: any
-  handleChange: any
   handleSubmit: any
   generatingKeywords: boolean
+  defaultData: any
 }
 
-export const InputForm = ({ handleChange, formData, handleSubmit, generatingKeywords = false }: inputFormProps) => {
+export const InputForm = ({ handleSubmit, generatingKeywords = false, defaultData }: inputFormProps) => {
   const theme = useTheme();
   const { planDetails } = useAuthStore()
   const planInfo = planDetails?.data?.Plan
+  const [formData, setFormData] = useState({
+    businessBrief: defaultData?.businessBrief || "",
+    userKeyword: defaultData?.userKeyword || "",
+    pageType: defaultData?.pageType || "",
+    tone: defaultData?.tone || "",
+    length: defaultData?.length || "",
+    goal: defaultData?.goal || "",
+    cta: defaultData?.cta || "",
+    competitors: defaultData?.competitors || "",
+  });
 
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const planWiseLength = (contentLengthByPlan: string) => {
     const lengths = ["short", "medium", "long"]
@@ -144,7 +156,7 @@ export const InputForm = ({ handleChange, formData, handleSubmit, generatingKeyw
               backgroundColor: theme.palette.primary.dark,
             },
           }}
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(formData)}
           disabled={generatingKeywords}
           loading={generatingKeywords}
           loadingPosition="end"

@@ -11,4 +11,3 @@ export const getProjects = async () => {
     const res = await api.get<responseType>("/getProjects");
     return res.data;
 };
-
