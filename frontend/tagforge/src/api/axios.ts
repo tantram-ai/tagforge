@@ -3,6 +3,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import Cookies from "js-cookie";
+
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -31,6 +33,8 @@ api.interceptors.response.use(
   async (error: AxiosError): Promise<never> => {
     if (error.response?.status === 401) {
       console.warn("Unauthorized - maybe session expired, refresh token, or logout");
+      Cookies.remove("token");
+      Cookies.remove("planData");
       window.location.href = "/login";
     }
     return Promise.reject(error);

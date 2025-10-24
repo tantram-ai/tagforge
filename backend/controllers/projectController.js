@@ -34,7 +34,7 @@ const getProjectList = async (req, res) => {
                 },
                 {
                     model: inputs,
-                    attributes: ["inputId", "businessBrief", "userKeyword", "pageType", "tone",
+                    attributes: ["inputId", "businessBrief", "brandName", "pageType", "tone",
                         "length", "goal", "cta", "competitors", "planId"],
                 },
                 {

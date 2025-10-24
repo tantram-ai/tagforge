@@ -18,19 +18,21 @@ export const TgTab = ({ tabItemList, tabComponentList }: tgTabProps) => {
   };
 
   return (
-    <Box sx={{ width: '100%', typography: 'body1' }}>
+    <Box sx={{ width: '100%', typography: 'body1'}}>
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', position:"fixed", zIndex: '20' ,
+        backgroundColor:"background.paper" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             {tabItemList?.map((item: string, index: number) => {
               return <Tab label={item} value={(index + 1).toString()} />
             })}
           </TabList>
         </Box>
+        <Box sx={{paddingTop:'4%'}}>
         {tabComponentList?.map((item: any, index: number) => {
           return <TabPanel value={(index + 1).toString()}>{item}</TabPanel>
         })}
-
+        </Box>
       </TabContext>
     </Box>
   );

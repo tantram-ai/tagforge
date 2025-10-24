@@ -20,7 +20,7 @@ export const InputForm = ({ handleSubmit, generatingKeywords = false, defaultDat
   const planInfo = planDetails?.data?.Plan
   const [formData, setFormData] = useState({
     businessBrief: defaultData?.businessBrief || "",
-    userKeyword: defaultData?.userKeyword || "",
+    brandName: defaultData?.brandName || "",
     pageType: defaultData?.pageType || "",
     tone: defaultData?.tone || "",
     length: defaultData?.length || "",
@@ -59,9 +59,9 @@ export const InputForm = ({ handleSubmit, generatingKeywords = false, defaultDat
         {/* User Keyword */}
 
         <TgTextInput
-          label="Main Keyword"
-          name="userKeyword"
-          value={formData?.userKeyword}
+          label="Brand Name"
+          name="brandName"
+          value={formData?.brandName}
           onChange={handleChange}
           required={true}
         />

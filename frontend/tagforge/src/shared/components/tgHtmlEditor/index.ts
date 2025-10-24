@@ -1,0 +1,1 @@
+export { TgHtmlEditor } from "./TgHtmlEditor";

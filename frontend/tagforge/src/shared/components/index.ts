@@ -1,3 +1,5 @@
+export { TgHtmlEditor } from "./tgHtmlEditor";
+export { TgSkeletonLoader } from "./tgSkeletonLoader";
 export { PremiumBadge } from "./premiumBadge";
 export { TgToggle } from "./tgToggle";
 export { TgSearch } from "./tgSearch";

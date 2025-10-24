@@ -8,5 +8,9 @@ export type getKeywordsTypes = {
     goal: string
     cta: string
     competitors: string
-    promptType:string
+    promptType: string
+}
+
+export type generateContentTypes = {
+
 }

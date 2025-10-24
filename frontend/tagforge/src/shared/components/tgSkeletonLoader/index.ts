@@ -1,0 +1,2 @@
+export { TgSkeletonLoader } from "./tgSkeletonLoader";
+

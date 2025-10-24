@@ -33,8 +33,8 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearAuth: () => {
-        Cookies.remove("token");
         Cookies.remove("planData");
+        Cookies.remove("token");
         set({ planDetails: null, decoded: null });
       },
     }),

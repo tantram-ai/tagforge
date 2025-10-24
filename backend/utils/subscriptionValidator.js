@@ -2,14 +2,16 @@
 const { subscription, plans } = require("../models")
 const { Op } = require("sequelize");
 
-let result = {
-    NOT_SUBSCRIBED: false,
-    PLAN_EXPIRED: false,
-    DATA: {},
-    INTERNAL_SERVER: null
-}
+
 
 module.exports = subscriptionValidator = async (uid) => {
+
+    let result = {
+        NOT_SUBSCRIBED: false,
+        PLAN_EXPIRED: false,
+        DATA: {},
+        INTERNAL_SERVER: null
+    }
 
     try {
         const subscriptionInfo = await subscription.findAll({ where: { uid: uid } })

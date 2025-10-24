@@ -4,26 +4,12 @@ import SearchIcon from '@mui/icons-material/Search';
 
 type tgSearchProps = {
     onSearch: any
+    handleInputChange: any
+    handleKeyDown: any
+    query: string
 }
 
-export const TgSearch = ({ onSearch }: tgSearchProps) => {
-    const [query, setQuery] = useState<string>('');
-
-    const handleInputChange = (event: any) => {
-        setQuery(event.target.value);
-    };
-
-    const handleSearch = () => {
-        if (onSearch) {
-            onSearch(query);
-        }
-    };
-
-    const handleKeyDown = (event: any) => {
-        if (event.key === 'Enter') {
-            handleSearch();
-        }
-    };
+export const TgSearch = ({ onSearch, handleInputChange, handleKeyDown, query }: tgSearchProps) => {
 
     return (
         <Box
@@ -35,7 +21,7 @@ export const TgSearch = ({ onSearch }: tgSearchProps) => {
                 mx: 'auto',
                 borderRadius: 2,
                 boxShadow: 1,
-                p:1
+                p: 1
             }}
         >
             <TextField
@@ -54,7 +40,7 @@ export const TgSearch = ({ onSearch }: tgSearchProps) => {
             />
             <IconButton
                 color="primary"
-                onClick={handleSearch}
+                onClick={onSearch}
                 sx={{
                     backgroundColor: '#1976d2',
                     color: '#fff',

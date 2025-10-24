@@ -19,7 +19,7 @@ const resendVerificationRoute = require('./routes/resendverification')
 const forgotPasswordRoute = require('./routes/forgotPassword')
 const generateRoute = require('./routes/generate')
 const projectRoute = require('./routes/projects')
-
+const keywordsRoute = require('./routes/keywords')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 const dbPort = process.env.SERVER_PORT;
@@ -55,7 +55,7 @@ app.use('/api', resendVerificationRoute)
 app.use('/api', forgotPasswordRoute)
 app.use('/api', generateRoute)
 app.use('/api', projectRoute)
-
+app.use('/api', keywordsRoute)
 
 
 

@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const { projects } = require("../../models");
 const { customError } = require("../../utils");
 

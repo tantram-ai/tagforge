@@ -8,6 +8,8 @@ type ProtectedRouteProps = {
 export const ProtectedRouteController = ({ children }: ProtectedRouteProps) => {
     const { decoded, planDetails } = useAuthStore()
 
+    console.log(planDetails?.data,"****************")
+    
     if (!decoded) {
         return <Navigate to="/login" replace />;
     }

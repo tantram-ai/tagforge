@@ -30,7 +30,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    keywordSuggestionPerProject:{
+    keywordSuggestionPerProject: {
       type: DataTypes.INTEGER,
       allowNull: true
     },

@@ -1,3 +1,4 @@
+const { contentPrompt } = require("./DynamicPrompts/contentPrompt");
 const { keywordSuggestion } = require("./DynamicPrompts/keywordSuggestion");
 const { cookieSettings } = require("./cookieSettings");
 const { internalServer,
@@ -18,5 +19,6 @@ module.exports = {
     invelidToken,
     verifyEmail,
     customError,
-    successWithMessage
+    successWithMessage,
+    contentPrompt
 }
