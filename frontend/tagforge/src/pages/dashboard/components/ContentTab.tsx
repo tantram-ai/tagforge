@@ -17,6 +17,7 @@ type contentTabProps = {
     seoContent?: any
     fetchingContent?: boolean
     fetchingProjects?: boolean
+    generatingKeywords?: any
 }
 
 const scrollViewComanStyle = {
@@ -48,7 +49,8 @@ export const ContentTab = ({
     onGenerate,
     seoContent,
     fetchingContent,
-    fetchingProjects
+    fetchingProjects,
+    generatingKeywords
 }: contentTabProps) => {
 
     const [value, setValue] = useState(seoContent);
@@ -140,7 +142,7 @@ export const ContentTab = ({
                                 <Divider sx={{ my: 1 }} />
                             </Box>
                             <Box sx={{ ...scrollViewComanStyle }}>
-                                {fetchingProjects ?
+                                {fetchingProjects || generatingKeywords ?
                                     <TgSkeletonLoader
                                         columns={1}
                                         rows={3} /> :

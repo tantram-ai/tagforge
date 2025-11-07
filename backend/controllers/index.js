@@ -1,4 +1,5 @@
 const { generate } = require("./aiGenerateController");
+const { getCompetitorKeywords } = require("./competitorUrlSearchController");
 const { generateContent } = require("./contentGenerationController");
 const { forgotPassword, resetPassword } = require("./forgotPasswordController");
 const { getPlans } = require("./getPlansController");
@@ -25,5 +26,6 @@ module.exports = {
     getProjectList,
     generateKeywords,
     keywordSearch,
-    generateContent
+    generateContent,
+    getCompetitorKeywords
 }

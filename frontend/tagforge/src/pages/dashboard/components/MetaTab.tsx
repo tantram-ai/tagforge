@@ -1,9 +1,9 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import Editor from "react-simple-code-editor";
 import beautify from "js-beautify";
 import Prism from "prismjs";
-import "prismjs/components/prism-markup"; // for HTML highlighting
-import "prismjs/themes/prism.css"; // you can choose other themes
+import "prismjs/components/prism-markup";
+import "prismjs/themes/prism.css";
 import { useState } from 'react';
 
 type metaProp = {
@@ -20,7 +20,6 @@ export const MetaTab = ({ meta }: metaProp) => {
     });
 
     const [code, setCode] = useState(formattedHTML);
-
 
     const highlightCode = (code: string) => {
         return Prism.highlight(code, Prism.languages.markup, "markup");
@@ -39,7 +38,7 @@ export const MetaTab = ({ meta }: metaProp) => {
                     borderRadius: 6,
                     border: "1px solid #ddd",
                 }}
-                readOnly={true} // set readOnly if you want viewer only
+                readOnly={true}
             />
         </Box>
 

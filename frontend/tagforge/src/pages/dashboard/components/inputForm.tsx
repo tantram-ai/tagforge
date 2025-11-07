@@ -127,14 +127,13 @@ export const InputForm = ({ handleSubmit, generatingKeywords = false, defaultDat
           name="cta"
           value={formData.cta}
           onChange={handleChange}
-          hidden={false}
         />
 
         {/* Competitors */}
         <PremiumBadge hidden={planInfo?.features?.competitorAnalysis}>
           <TgTextInput
             label="Competitors URL"
-            name="competitorsUrl"
+            name="competitors"
             value={formData.competitors}
             onChange={handleChange}
             disabled={!planInfo?.features?.competitorAnalysis}

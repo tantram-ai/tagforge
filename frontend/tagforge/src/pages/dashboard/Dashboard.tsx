@@ -3,7 +3,7 @@ import { PremiumBadge, TgAccordian, TgModal, TgSearch, TgSkeletonLoader, TgTab, 
 import { useEffect, useState } from 'react'
 import { ContentTab, InputForm, MetaTab } from './components'
 import { useAuthStore, useSnackbarStore } from '../../store'
-import { createProject, generateContent, getKeywords, getProjects, keywordSearch } from '../../api/services'
+import { createProject, generateContent, getCompetitorKeywords, getKeywords, getProjects, keywordSearch } from '../../api/services'
 
 export const Dashboard = () => {
   const { planDetails } = useAuthStore()
@@ -16,7 +16,7 @@ export const Dashboard = () => {
   const [fetchingProjects, setFetchingProjects] = useState<boolean>(false)
   const [fetchingContent, setFetchingContent] = useState<boolean>(false)
   const [seoContent, setSeoContent] = useState<any>({})
-  const [activeForm, setActiveFormInput] = useState({})
+  const [activeForm, setActiveFormInput] = useState<any>({})
   const [fetchingKeywords, setFeatchingKeywords] = useState<boolean>(false)
   const [generatingKeywords, setGeneratingKeywords] = useState<boolean>(false)
   const [suggestedKeywords, setSuggestedKeywords] = useState([])
@@ -25,6 +25,16 @@ export const Dashboard = () => {
   const [activeProjectIndex, setActivePorjectIndex] = useState<number>(0)
   const [kwdPageCount, setKwdPageCount] = useState<number>(0)
   const [selectedKeywords, setSelectedKeywords] = useState<any>([])
+  const [toogleAlignment, setToogleAlignment] = useState('Keyword');
+
+  const handleToggleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newAlignment: string,
+  ) => {
+    setToogleAlignment(newAlignment);
+    setQuery("")
+  };
+
 
   const tabItemList = ["Content", "Meta", "Facebook", "Twitter", "Linkdin"]
   const [query, setQuery] = useState<string>('');
@@ -32,6 +42,7 @@ export const Dashboard = () => {
   const handleSuggestedKeywordClick = (keywordData: any) => {
     setQuery(keywordData?.keyword)
     setKwdPageCount(0)
+    setToogleAlignment("Keyword")
     handleSearch(keywordData?.keyword)
   }
 
@@ -43,11 +54,12 @@ export const Dashboard = () => {
   }
 
   const onGenerate = async () => {
-    setFetchingContent(true)
     const projectId = projects[activeProjectIndex]?.projectId
     if (selectedKeywords.length <= 0) {
       showSnackbar("Please select keywords", "error")
+      return
     }
+    setFetchingContent(true)
     try {
       const result = await generateContent({
         ...activeForm,
@@ -83,6 +95,7 @@ export const Dashboard = () => {
       seoContent={seoContent?.seoContent}
       fetchingContent={fetchingContent}
       fetchingProjects={fetchingProjects}
+      generatingKeywords={generatingKeywords}
     />,
     <MetaTab meta={seoContent?.metaHtml} />,
     <Typography>Facebook</Typography>,
@@ -161,14 +174,18 @@ export const Dashboard = () => {
   }
 
   const setGeneratedContent = (allProjectData: any) => {
-    const content = allProjectData[activeProjectIndex]?.Generation
+    const content = allProjectData[activeProjectIndex]?.Generation || ""
     setSeoContent(content)
   }
 
   const setSelectedkeywordList = (allProjectData: any) => {
     const keywords = allProjectData[activeProjectIndex]?.Keywords || []
-    const suggestedKeywords = keywords?.find((item: any) => item?.selected)
-    setSelectedKeywords(JSON.parse(suggestedKeywords?.phrase))
+    const suggestedKeywords = keywords?.find((item: any) => item?.selected) || []
+    if (suggestedKeywords?.phrase) {
+      setSelectedKeywords(JSON?.parse(suggestedKeywords?.phrase))
+    } else {
+      setSelectedKeywords([])
+    }
   }
 
   const setActivePorjectForm = (allProjectData: any) => {
@@ -177,8 +194,13 @@ export const Dashboard = () => {
   }
 
   const jsonToArray = (list: string) => {
-    let cleaned = list.replace(/```json|```/g, "").trim();
-    return JSON.parse(cleaned)
+    if (list) {
+      let cleaned = list?.replace(/```json|```/g, "").trim();
+      return JSON.parse(cleaned) || []
+    } else {
+      return []
+    }
+
   }
 
   const suggestedKeywordList = (allProjectData: any) => {
@@ -193,6 +215,27 @@ export const Dashboard = () => {
       setExpended("panel0")
     }
   }, [])
+
+  useEffect(() => {
+    if (projects?.length > 0) {
+      suggestedKeywordList(projects)
+      setActivePorjectForm(projects)
+      setGeneratedContent(projects)
+      setSelectedkeywordList(projects)
+    }
+  }, [activeProjectIndex])
+
+  useEffect(() => {
+    if (activeForm?.competitors) {
+      setToogleAlignment("URL")
+      setQuery(activeForm?.competitors)
+    } else {
+      setToogleAlignment("Keyword")
+      setQuery("")
+    }
+  }, [activeForm])
+
+
 
   const scrollViewComanStyle = ({ height = "85vh" }: { height: string }) => {
     return {
@@ -225,9 +268,13 @@ export const Dashboard = () => {
   const handleSearch = async (keyword = null) => {
     setFeatchingKeywords(true)
     const newQuery = keyword ? keyword : query
-
+    let result: any = []
     try {
-      const result = await keywordSearch({ keywords: [newQuery], page: kwdPageCount });
+      if (toogleAlignment === "Keyword") {
+        result = await keywordSearch({ keywords: [newQuery], page: kwdPageCount });
+      } else {
+        result = await getCompetitorKeywords({ url: [newQuery], page: kwdPageCount });
+      }
       if (result.code === "SUCCESS") {
         setKeywordList(result?.data?.tasks[0]?.result || [])
         setFeatchingKeywords(false)
@@ -332,15 +379,21 @@ export const Dashboard = () => {
             </ListItem>
             <Divider variant="middle" component="li" />
             <Box sx={{ mt: 1, mx: 1 }}>
-              <PremiumBadge hidden={false}>
-                <TgToggle disabled={!planInfo?.features?.competitorAnalysis} />
+              <PremiumBadge hidden={planInfo?.features?.competitorAnalysis}>
+                <TgToggle
+                  disabled={!planInfo?.features?.competitorAnalysis}
+                  handleToggleChange={handleToggleChange}
+                  toogleAlignment={toogleAlignment}
+                />
               </PremiumBadge>
             </Box>
+
             <TgSearch
               onSearch={() => handleSearch()}
               handleInputChange={handleInputChange}
               handleKeyDown={handleKeyDown}
               query={query} />
+
             <Box sx={{ ...scrollViewComanStyle({ height: "58vh" }) }}>
               <TgTable
                 keywordList={keywordList}
@@ -349,6 +402,7 @@ export const Dashboard = () => {
                 highlightRow={handleHighlightRow}
               />
             </Box>
+
           </List>
         </Grid>
       </Grid>

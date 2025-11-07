@@ -5,6 +5,8 @@ import { Quill } from 'react-quill-new'
 import BlotFormatter from '@enzedonline/quill-blot-formatter2';
 Quill.register('modules/blotFormatter', BlotFormatter);
 
+
+
 // Toolbar, modules, and formats as above
 
 const toolbarOptions = [
@@ -18,7 +20,7 @@ const toolbarOptions = [
     [{ 'align': [] }],
     ['blockquote', 'code-block'],
     ['link', 'image', 'video'],
-    ['table'], // Enable table creation for row/column layouts
+    ['table'],
     ['clean']
 ];
 

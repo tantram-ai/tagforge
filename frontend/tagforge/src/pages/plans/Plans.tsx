@@ -127,11 +127,14 @@ export const Plans = () => {
   }
 
   const handleSubscribe = (plan: any) => {
-    if (plan?.price === 0 && decoded) {
-      setPlan(plan)
-    } else {
-      navigate("/payments", { state: { plan: plan } })
-    }
+    // if (plan?.price === 0 && decoded) {
+    //   setPlan(plan)
+    // } else {
+    //   navigate("/payments", { state: { plan: plan } })
+    // }
+
+    setPlan(plan)
+
   };
 
   return (

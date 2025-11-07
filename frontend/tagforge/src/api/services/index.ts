@@ -1,3 +1,4 @@
+export { getCompetitorKeywords } from "./keywordServices/keywordServices";
 export { generateContent } from "./promptServices/promptServices";
 export { keywordSearch } from "./keywordServices/keywordServices";
 export { createProject, getProjects } from "./projectServices/projectServices";

@@ -4,24 +4,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 type tgToggleProps = {
     disabled?: boolean
+    toogleAlignment: string
+    handleToggleChange: any
 }
 
-export const TgToggle = ({ disabled = false }: tgToggleProps) => {
-    const [alignment, setAlignment] = React.useState('Keyword');
 
-    const handleChange = (
-        event: React.MouseEvent<HTMLElement>,
-        newAlignment: string,
-    ) => {
-        setAlignment(newAlignment);
-    };
+export const TgToggle = ({ disabled = false, toogleAlignment, handleToggleChange }: tgToggleProps) => {
 
     return (
         <ToggleButtonGroup
             color="primary"
-            value={alignment}
+            value={toogleAlignment}
             exclusive
-            onChange={handleChange}
+            onChange={handleToggleChange}
             aria-label="Platform"
             sx={{ height: '5vh' }}
             disabled={disabled}

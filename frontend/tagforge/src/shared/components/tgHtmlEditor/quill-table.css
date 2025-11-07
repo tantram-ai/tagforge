@@ -1,0 +1,36 @@
+/* quill-table.css */
+
+/* Ensure tables render properly */
+.ql-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1rem;
+  table-layout: fixed;
+}
+
+/* Cells and headers */
+.ql-editor th,
+.ql-editor td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+/* Header styling */
+.ql-editor th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Optional zebra rows */
+.ql-editor tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+/* Light background for readability */
+.ql-editor table {
+  background-color: #fff;
+  color: #000;
+}
