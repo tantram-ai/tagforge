@@ -15,19 +15,17 @@ const setSuggestedKeyWords = async (output, projectId) => {
 }
 
 const commanAction = async (projectId, req, res) => {
-    // const output = await generate(req, res)
-    // const text = output?.content?.[0]?.text || "";
-    // let cleaned = text.replace(/```json|```/g, "").trim();
-    let cleaned = mockData.replace(/```json|```/g, "").trim();
+    const output = await generate(req, res)
+    let keywords = JSON.parse(output).keywords || [];
+    // let cleaned = mockData.replace(/```json|```/g, "").trim();
 
-    const isKeywordCreated = await setSuggestedKeyWords(cleaned, projectId)
+    const isKeywordCreated = await setSuggestedKeyWords(JSON.stringify(keywords), projectId)
     await projects.increment('suggestedKwGenerateCount', {
         by: 1,
         where: { projectId }
     });
 
-    result = JSON.parse(cleaned)
-    return result
+    return keywords
 }
 
 const generateKeywords = async (req, res) => {

@@ -17,6 +17,14 @@
     }
   }
   
+  .css-195ii7s-MuiFormControlLabel-root {
+    margin-right:0 !important;
+}
+
+.css-19opgx6-MuiFormControlLabel-root{
+  margin-right:0 !important;
+}
+
 body {
     @apply transition-colors duration-300;
     background-color: var(--color-bg);

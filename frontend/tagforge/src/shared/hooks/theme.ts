@@ -10,8 +10,14 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     customBackground?: {
       activeButton?: string;
+      cardBg?:string
+    },
+    customBorders?: {
+      cardBorder?: string;
+      sideBorder?:string
     };
   }
+  
 }
 
 const lightTheme = createTheme({
@@ -33,7 +39,12 @@ const lightTheme = createTheme({
     },
     customBackground: {
       activeButton: "#e3f2fd",
+      cardBg:"#ffffff"
     },
+    customBorders:{
+      cardBorder:"#ffffff",
+      sideBorder:"#dedede"
+    }
   },
 });
 
@@ -47,7 +58,7 @@ const darkTheme = createTheme({
       main: "#ce93d8", // light purple
     },
     background: {
-      default: "#121212",
+      default: "#292828",
       paper: "#0b0b0b",
     },
     text: {
@@ -55,8 +66,13 @@ const darkTheme = createTheme({
       secondary: "#aaaaaa",
     },
     customBackground: {
-      activeButton: "#e3f2fd",
+      activeButton: "#373737",
+      cardBg:"#000"
     },
+    customBorders:{
+      cardBorder:"gray",
+      sideBorder:"gray"
+    }
   },
 });
 

@@ -1,34 +1,67 @@
-const { keywordSuggestion, contentPrompt } = require("../utils");
-const axios = require("axios");
-
+const { keywordSuggestion,
+    contentPrompt,
+    seoContentFunction,
+    keywordFunction,
+    keywordSchema,
+    handleKeywordsResponse,
+    seoContentSchema,
+    keywordSuggestionSystemPrompt,
+    contentSystemPrompt } = require("../utils");
+const OpenAI = require("openai");
 
 const generate = async (req, res) => {
     const { promptType } = req?.body
     const plan = req?.subsciptionData?.data?.Plan?.dataValues
 
-    const prompt = (type) => {
+    const client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+        baseURL: process.env.OPENAI_BASE_URL
+    });
+
+    const promptInfo = (type) => {
         switch (type) {
             case "KEYWORD":
-                return keywordSuggestion(req?.body)
+                return {
+                    prompt: keywordSuggestion(req?.body),
+                    contentFunction: keywordFunction,
+                    system: keywordSuggestionSystemPrompt,
+                    name: "keywords_response",
+                    schema: keywordSchema
+                }
             case "CONTENT":
-                return contentPrompt(req?.body, plan)
+                return {
+                    prompt: contentPrompt(req?.body, plan),
+                    contentFunction: seoContentFunction,
+                    system: contentSystemPrompt,
+                    name: "seo_content_response",
+                    schema: seoContentSchema
+                }
             default:
                 return "";
         }
     }
 
     try {
-        const model = process.env.GPT_MODEL || 'gpt-4o-mini';
-        const payload = {
-            model,
-            input: prompt(promptType),
-        };
-
-        const resp = await axios.post(process.env.OPENAI_BASE_URL, payload, {
-            headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` }
+        const { prompt, contentFunction, system, name, schema } = promptInfo(promptType)
+        const completion = await client.responses.create({
+            model: process.env.GPT_MODEL || "gpt-4.1-mini",
+            input: [
+                { role: "system", content: system },
+                { role: "user", content: prompt },
+            ],
+            text: {
+                format: {
+                    type: "json_schema",
+                    name: name,
+                    schema: schema,
+                    strict: true,
+                },
+            },
+            tools: [contentFunction],
         });
 
-        return resp?.data?.output[0]
+        const result = handleKeywordsResponse(completion);
+        return result
 
     } catch (error) {
         throw error

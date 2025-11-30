@@ -13,12 +13,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import NightlightIcon from '@mui/icons-material/Nightlight';
-import LightModeIcon from '@mui/icons-material/LightMode';
 import { Avatar, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
 import logo from '../../../assets/logo/ChatGPT Image Sep 12, 2025, 11_54_02 PM.png'
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore, useSnackbarStore } from '../../../store';
+import { ColorModeSwitch } from './ColorModeSwitch';
+import { useLocation } from "react-router-dom";
 
 
 
@@ -47,8 +47,12 @@ export const NavigationBar = (props: Props) => {
     };
     const { decoded, clearAuth, planDetails } = useAuthStore()
     const { showSnackbar } = useSnackbarStore()
+    const location = useLocation();
     const settings = [
-        { item: 'Dashboard', onClick: () => navigate('/dashboard') },
+        {
+            item: location.pathname === "/dashboard" ? 'Home' : "Workspace",
+            onClick: () => location.pathname === "/dashboard" ? navigate('/') : navigate('/dashboard')
+        },
         {
             item: 'Logout', onClick: () => {
                 clearAuth();
@@ -117,8 +121,8 @@ export const NavigationBar = (props: Props) => {
             "& .MuiToolbar-root": {
                 minHeight: 50,
             },
-            borderBottomLeftRadius:'10px',
-            borderBottomRightRadius:'10px',
+            borderBottomLeftRadius: '10px',
+            borderBottomRightRadius: '10px',
         }
 
 
@@ -146,10 +150,7 @@ export const NavigationBar = (props: Props) => {
                                 >
                                     <MenuIcon />
                                 </IconButton>
-                                <Typography
-                                    component="div"
-                                    sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                                >
+                                <Typography component="div" sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
                                     <img
                                         src={logo}
                                         alt="logo"
@@ -176,31 +177,12 @@ export const NavigationBar = (props: Props) => {
                             </Grid>
 
                             <Grid size={4} container justifyContent="flex-end" >
-                                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                    {!planDetails?.data && <Button variant="contained" size="small" sx={{ mx: 2 }} onClick={handleStartFreeTrial}>Start free trial</Button>}
-                                    {!decoded && <Button variant="outlined" size="small" onClick={() => navigate("/login")}>Sign in</Button>}
-                                    <IconButton onClick={toggleTheme}
-                                        sx={{
-                                            backgroundColor: "background.paper",
-                                            boxShadow: 2,
-                                            marginLeft: 2,
-                                            marginRight: 1
-                                            // "&:hover": {
-                                            //   backgroundColor: "#757575",
-                                            //   color: "white",
-                                            // }
-                                        }}
-                                    >
-                                        {mode === "light" ? <NightlightIcon sx={(theme) => ({
-                                            color: theme.palette.text.primary,
-                                        })}
-                                        /> :
-                                            <LightModeIcon sx={(theme) => ({
-                                                color: theme.palette.text.primary,
-                                            })}
-                                            />
-                                        }
-                                    </IconButton>
+                                <Box sx={{ display: "flex", gap: 2, alignItems: 'center' }}>
+
+                                    {!planDetails?.data && <Button variant="contained" size="small" onClick={handleStartFreeTrial} sx={{ height: '60%' }}>Start free trial</Button>}
+                                    {!decoded && <Button variant="outlined" size="small" onClick={() => navigate("/login")} sx={{ height: '60%' }}>Sign in</Button>}
+                                    <ColorModeSwitch onClick={toggleTheme} />
+
                                     {decoded &&
                                         <>
                                             <Tooltip title="Open settings">

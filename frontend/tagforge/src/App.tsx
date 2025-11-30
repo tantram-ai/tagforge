@@ -51,7 +51,7 @@ export const App = ({ toggleTheme, mode }: AppProps) => {
             path="/dashboard"
             element={
               <ProtectedRouteController>
-              <NavigationBar toggleTheme={toggleTheme} mode={mode} isDashboard={true}><Dashboard /></NavigationBar>
+                <NavigationBar toggleTheme={toggleTheme} mode={mode} isDashboard={true}><Dashboard /></NavigationBar>
               </ProtectedRouteController>
             }
           />

@@ -20,7 +20,6 @@ export const TgSearch = ({ onSearch, handleInputChange, handleKeyDown, query }: 
                 maxWidth: 500,
                 mx: 'auto',
                 borderRadius: 2,
-                boxShadow: 1,
                 p: 1
             }}
         >

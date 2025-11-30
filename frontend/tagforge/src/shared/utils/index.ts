@@ -1,0 +1,1 @@
+export { extractAllMeta } from "./metaExtractor";

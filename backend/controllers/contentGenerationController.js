@@ -94,8 +94,8 @@ const generateContent = async (req, res) => {
         const isProjectLimitValid = await validateContentGenLimit(req, res)
 
         if (isProjectLimitValid) {
-            // const output = await generate(req, res)
-            let cleaned = mockData?.content[0]?.text?.content[0].text.replace(/```json|```/g, "").trim()
+            const output = await generate(req, res)
+            let cleaned = output?.content[0]?.text?.content[0].text.replace(/```json|```/g, "").trim()
             await setGeneratedContent(JSON.parse(cleaned), projectId)
             await setSuggestedKeyWords(JSON.stringify(selectedKeywords), projectId)
             await users.increment('generationCount', {

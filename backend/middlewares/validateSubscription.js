@@ -5,8 +5,6 @@ const validateSubscription = async (req, res, next) => {
 
     const { NOT_SUBSCRIBED, PLAN_EXPIRED, DATA, INTERNAL_SERVER } = await subscriptionValidator(user?.uid)
 
-    console.log(NOT_SUBSCRIBED, PLAN_EXPIRED, DATA, INTERNAL_SERVER)
-
     if (NOT_SUBSCRIBED) {
         return customError(res, "NOT_SUBSCRIBED", "Please subscribe a plan to start")
     }

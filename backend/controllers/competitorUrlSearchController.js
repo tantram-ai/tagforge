@@ -2071,16 +2071,16 @@ const getCompetitorKeywords = async (req, res) => {
     ]
 
     try {
-        // const resp = await axios.post(process.env.COMPETITOR_KEYWORD_API_BASE, payload, {
-        //     headers: { Authorization: `Basic ${process.env.KEYWORD_API_KEY}` }
-        // });
+        const resp = await axios.post(process.env.COMPETITOR_KEYWORD_API_BASE, payload, {
+            headers: { Authorization: `Basic ${process.env.KEYWORD_API_KEY}` }
+        });
 
-        // if (resp?.data) {
-        //     return fetchSuccess(res, resp?.data)
-        // }
-        setTimeout(() => {
-            return fetchSuccess(res, Keywordata)
-        }, 2000);
+        if (resp?.data) {
+            return fetchSuccess(res, resp?.data)
+        }
+        // setTimeout(() => {
+        //     return fetchSuccess(res, Keywordata)
+        // }, 2000);
 
     } catch (error) {
         return internalServer(error, res)

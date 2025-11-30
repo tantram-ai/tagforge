@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider, CssBaseline, useMediaQuery } from "@mui/material";
 import { lightTheme, darkTheme } from "./shared/hooks/theme.js";
 import { App } from "./App.js";
-
+import './index.css'
 
 function Main() {
   // Detect system preference

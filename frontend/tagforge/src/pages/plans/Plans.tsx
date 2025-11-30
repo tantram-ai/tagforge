@@ -104,7 +104,7 @@ export const Plans = () => {
 
 
   const setPlan = async (plan: any) => {
-    const payload =
+    const payload:any=
     {
       planId: plan?.planId,
       plan: plan?.name,
@@ -127,18 +127,16 @@ export const Plans = () => {
   }
 
   const handleSubscribe = (plan: any) => {
-    // if (plan?.price === 0 && decoded) {
-    //   setPlan(plan)
-    // } else {
-    //   navigate("/payments", { state: { plan: plan } })
-    // }
-
-    setPlan(plan)
-
+    if (plan?.price === 0 && decoded) {
+      setPlan(plan)
+    } else {
+      navigate("/payments", { state: { plan: plan } })
+    }
+    // setPlan(plan)
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 6 } }}>
+    <Box sx={{ p: { xs: 2, md: 6, marginTop:'5%'} }}>
       {/* 🔹 Hero Section */}
       <Box textAlign="center" sx={{ mb: 6 }}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>

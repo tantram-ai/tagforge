@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import HtmlIcon from '@mui/icons-material/Html';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import { FloatingButton } from '../../../shared/components/floatingButton';
 
 type contentTabProps = {
     suggestedKeywords: any
@@ -18,6 +19,8 @@ type contentTabProps = {
     fetchingContent?: boolean
     fetchingProjects?: boolean
     generatingKeywords?: any
+    openKeywordTab:boolean
+    setOpenKeywordTab:any
 }
 
 const scrollViewComanStyle = {
@@ -50,7 +53,9 @@ export const ContentTab = ({
     seoContent,
     fetchingContent,
     fetchingProjects,
-    generatingKeywords
+    generatingKeywords,
+    openKeywordTab,
+    setOpenKeywordTab
 }: contentTabProps) => {
 
     const [value, setValue] = useState(seoContent);
@@ -132,60 +137,61 @@ export const ContentTab = ({
 
             </Box>
             <Divider sx={{ my: 2 }} />
-
-            <Grid container spacing={1}>
-                <Grid size={6}>
-                    <Paper sx={{ p: 1 }}>
-                        <Box>
+            <FloatingButton openKeywordTab={openKeywordTab} setOpenKeywordTab={setOpenKeywordTab}>
+                <Grid container spacing={1}>
+                    <Grid size={6}>
+                        <Box sx={{ p: 1 }}>
                             <Box>
-                                <Typography variant="subtitle1" textAlign="center">Suggested Keywords</Typography>
+                                <Box>
+                                    <Typography variant="subtitle1" textAlign="center">Suggested Keywords</Typography>
+                                    <Divider sx={{ my: 1 }} />
+                                </Box>
+                                <Box sx={{ ...scrollViewComanStyle }}>
+                                    {fetchingProjects || generatingKeywords ?
+                                        <TgSkeletonLoader
+                                            columns={1}
+                                            rows={3} /> :
+                                        <>
+                                            {suggestedKeywords?.length > 0 && suggestedKeywords?.map((item: any) => {
+                                                return <Chip
+                                                    label={item?.keyword}
+                                                    sx={{ margin: '2px' }}
+                                                    color={item?.keyword === query ? "primary" : "default"}
+                                                    onClick={() => handleSuggestedKeywordClick(item)} />
+                                            })}
+                                        </>
+                                    }
+                                </Box>
+                            </Box>
+                        </Box>
+
+                    </Grid>
+                    <Grid size={6}>
+                        <Box sx={{ p: 1 }}>
+                            <Box>
+                                <Typography variant="subtitle1" textAlign="center" >Selected Keywords</Typography>
                                 <Divider sx={{ my: 1 }} />
                             </Box>
                             <Box sx={{ ...scrollViewComanStyle }}>
-                                {fetchingProjects || generatingKeywords ?
+                                {fetchingProjects ?
                                     <TgSkeletonLoader
                                         columns={1}
                                         rows={3} /> :
                                     <>
-                                        {suggestedKeywords?.length > 0 && suggestedKeywords?.map((item: any) => {
+                                        {selectedKeywords?.length > 0 && selectedKeywords?.map((item: any) => {
                                             return <Chip
                                                 label={item?.keyword}
                                                 sx={{ margin: '2px' }}
-                                                color={item?.keyword === query ? "primary" : "default"}
-                                                onClick={() => handleSuggestedKeywordClick(item)} />
+                                                onDelete={() => deselect(item)} />
                                         })}
                                     </>
                                 }
+
                             </Box>
                         </Box>
-                    </Paper>
-
+                    </Grid>
                 </Grid>
-                <Grid size={6}>
-                    <Paper sx={{ p: 1 }}>
-                        <Box>
-                            <Typography variant="subtitle1" textAlign="center" >Selected Keywords</Typography>
-                            <Divider sx={{ my: 1 }} />
-                        </Box>
-                        <Box sx={{ ...scrollViewComanStyle }}>
-                            {fetchingProjects ?
-                                <TgSkeletonLoader
-                                    columns={1}
-                                    rows={3} /> :
-                                <>
-                                    {selectedKeywords?.length > 0 && selectedKeywords?.map((item: any) => {
-                                        return <Chip
-                                            label={item?.keyword}
-                                            sx={{ margin: '2px' }}
-                                            onDelete={() => deselect(item)} />
-                                    })}
-                                </>
-                            }
-
-                        </Box>
-                    </Paper>
-                </Grid>
-            </Grid>
+            </FloatingButton>
         </>
 
     )

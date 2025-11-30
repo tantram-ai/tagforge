@@ -2071,16 +2071,15 @@ const keywordSearch = async (req, res) => {
     ]
 
     try {
-        // const resp = await axios.post(process.env.KEYWORD_API_BASE, payload, {
-        //     headers: { Authorization: `Basic ${process.env.KEYWORD_API_KEY}` }
-        // });
-
-        // if (resp?.data) {
-        //     return fetchSuccess(res, resp?.data)
-        // }
-        setTimeout(() => {
-            return fetchSuccess(res, Keywordata)
-        }, 2000);
+        const resp = await axios.post(process.env.KEYWORD_API_BASE, payload, {
+            headers: { Authorization: `Basic ${process.env.KEYWORD_API_KEY}` }
+        });
+        if (resp?.data) {
+            return fetchSuccess(res, resp?.data)
+        }
+        // setTimeout(() => {
+        //     return fetchSuccess(res, Keywordata)
+        // }, 2000);
 
     } catch (error) {
         return internalServer(error, res)

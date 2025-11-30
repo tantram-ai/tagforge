@@ -1,9 +1,10 @@
-import { Box, Button, Divider, Grid, List, ListItem, Paper, TextField, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, List, ListItem, TextField, Typography } from '@mui/material'
 import { PremiumBadge, TgAccordian, TgModal, TgSearch, TgSkeletonLoader, TgTab, TgTable, TgToggle } from '../../shared/components'
 import { useEffect, useState } from 'react'
-import { ContentTab, InputForm, MetaTab } from './components'
+import { ContentTab, InputForm, MetaTab, SocialPreviewCard } from './components'
 import { useAuthStore, useSnackbarStore } from '../../store'
 import { createProject, generateContent, getCompetitorKeywords, getKeywords, getProjects, keywordSearch } from '../../api/services'
+import { extractAllMeta } from '../../shared/utils'
 
 export const Dashboard = () => {
   const { planDetails } = useAuthStore()
@@ -23,9 +24,11 @@ export const Dashboard = () => {
   const [keywordList, setKeywordList] = useState([])
   const [projects, setprojects] = useState<any>([])
   const [activeProjectIndex, setActivePorjectIndex] = useState<number>(0)
-  const [kwdPageCount, setKwdPageCount] = useState<number>(0)
+  const [kwdPageCount, setKwdPageCount] = useState<number>(1)
   const [selectedKeywords, setSelectedKeywords] = useState<any>([])
   const [toogleAlignment, setToogleAlignment] = useState('Keyword');
+  const [openKeywordTab, setOpenKeywordTab] = useState<boolean>(true)
+
 
   const handleToggleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -36,12 +39,12 @@ export const Dashboard = () => {
   };
 
 
-  const tabItemList = ["Content", "Meta", "Facebook", "Twitter", "Linkdin"]
+  const tabItemList = ["Content", "Meta", "Facebook", "Twitter", "Linkdin", "Google"]
   const [query, setQuery] = useState<string>('');
 
   const handleSuggestedKeywordClick = (keywordData: any) => {
     setQuery(keywordData?.keyword)
-    setKwdPageCount(0)
+    setKwdPageCount(1)
     setToogleAlignment("Keyword")
     handleSearch(keywordData?.keyword)
   }
@@ -84,6 +87,7 @@ export const Dashboard = () => {
     }
   }
 
+  const socialMediaPreviewData = extractAllMeta(seoContent?.metaHtml)
   const tabComponentList = [
     <ContentTab
       suggestedKeywords={suggestedKeywords}
@@ -96,12 +100,65 @@ export const Dashboard = () => {
       fetchingContent={fetchingContent}
       fetchingProjects={fetchingProjects}
       generatingKeywords={generatingKeywords}
+      openKeywordTab={openKeywordTab}
+      setOpenKeywordTab={setOpenKeywordTab}
     />,
     <MetaTab meta={seoContent?.metaHtml} />,
-    <Typography>Facebook</Typography>,
-    <Typography>Twitter</Typography>,
-    <Typography>Linkdin</Typography>,
+
+    <div style={{
+      background: "#f2f3f5",
+      minHeight: "100vh",
+      paddingTop: 32
+    }}>
+      <SocialPreviewCard
+        image="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=cover&w=500&q=80"
+        title={socialMediaPreviewData?.title}
+        description={socialMediaPreviewData?.description}
+        url={socialMediaPreviewData?.url}
+        site="facebook"
+      />
+    </div>
+    ,
+    <div style={{
+      background: "#f2f3f5",
+      minHeight: "100vh",
+      paddingTop: 32
+    }}>
+      <SocialPreviewCard
+        image="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=cover&w=500&q=80"
+        title={socialMediaPreviewData?.title}
+        description={socialMediaPreviewData?.description}
+        url={socialMediaPreviewData?.url}
+        site="twitter"
+      />
+    </div>,
+    <div style={{
+      background: "#f2f3f5",
+      minHeight: "100vh",
+      paddingTop: 32
+    }}>
+      <SocialPreviewCard
+        image="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=cover&w=500&q=80"
+        title={socialMediaPreviewData?.title}
+        description={socialMediaPreviewData?.description}
+        url={socialMediaPreviewData?.url}
+        site="linkedin"
+      />
+    </div>,
+    <div style={{
+      background: "#f2f3f5",
+      minHeight: "100vh",
+      paddingTop: 32
+    }}>
+      <SocialPreviewCard
+        title={socialMediaPreviewData?.title}
+        description={socialMediaPreviewData?.description}
+        url={socialMediaPreviewData?.url}
+        site="google"
+      />
+    </div>,
   ]
+
 
   const handleSubmit = async (formData: any, projectId: string) => {
     setGeneratingKeywords(true)
@@ -111,6 +168,7 @@ export const Dashboard = () => {
         setSuggestedKeywords(result?.data?.text)
         setGeneratingKeywords(false)
         setActiveFormInput(formData)
+        setOpenKeywordTab(true)
       }
     } catch (err: any) {
       showSnackbar(err?.response?.data?.message, "error");
@@ -250,11 +308,11 @@ export const Dashboard = () => {
         background: "transparent",
       },
       "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "#3f3d3d",
+        backgroundColor: "customBorders.sideBorder",
         borderRadius: "8px",
       },
       "&::-webkit-scrollbar-thumb:hover": {
-        backgroundColor: "#555",
+        backgroundColor: "customBorders.sideBorder",
       },
       // scrollbarWidth: "thin", // Firefox
       // scrollbarColor: "#888 transparent", // Firefox
@@ -315,19 +373,20 @@ export const Dashboard = () => {
   }
 
   return (
-    <Paper
-      elevation={4}
+    <Box
       sx={{
         flex: 1,
         borderRadius: 3,
         p: 1,
         marginTop: '4.5%',
-        height: '88vh'
+        height: '88vh',
+        backgroundColor: "background.default"
       }}
     >
       <Grid container spacing={1}>
         <Grid size={3} sx={{
-          ...scrollViewComanStyle({ height: "85vh" })
+          ...scrollViewComanStyle({ height: "85vh" }),
+          borderRight: "2px solid cutromBorders.sideBorder"
         }}>
           <List>
             <ListItem>
@@ -343,34 +402,44 @@ export const Dashboard = () => {
                   <>
                     {projects?.length > 0 && projects?.map((item: any, index: number) => {
                       return (
-                        <TgAccordian
-                          active={activeProjectIndex === index}
-                          data={item}
-                          index={index}
-                          expanded={expanded === `panel${index}`}
-                          onChange={() => {
-                            setExpended(expanded === `panel${index}` ? false : `panel${index}`)
-                            setActivePorjectIndex(index)
-                          }}>
-                          <InputForm
-                            defaultData={item?.Input}
-                            handleSubmit={(formData: any) => handleSubmit(formData, item?.projectId)}
-                            generatingKeywords={generatingKeywords}
-                          />
-                        </TgAccordian>
+                        <Box sx={{ my: 1 }}>
+                          <TgAccordian
+                            active={activeProjectIndex === index}
+                            data={item}
+                            index={index}
+                            expanded={expanded === `panel${index}`}
+                            onChange={() => {
+                              setExpended(expanded === `panel${index}` ? false : `panel${index}`)
+                              setActivePorjectIndex(index)
+                              if (expanded !== `panel${index}`) {
+                                setOpenKeywordTab(true)
+                              } else {
+                                setOpenKeywordTab(false)
+                              }
+                            }}>
+                            <InputForm
+                              defaultData={item?.Input}
+                              handleSubmit={(formData: any) => handleSubmit(formData, item?.projectId)}
+                              generatingKeywords={generatingKeywords}
+                            />
+                          </TgAccordian>
+                        </Box>
+
                       )
                     })}
                   </>
                 }
               </Box>
             </ListItem>
-
           </List>
         </Grid>
-        <Grid size={6} sx={{ ...scrollViewComanStyle({ height: "85vh" }), position: 'relative' }} >
+        <Grid size={6} sx={{ ...scrollViewComanStyle({ height: "85vh" }) }} >
           <TgTab tabItemList={tabItemList} tabComponentList={tabComponentList} />
         </Grid>
-        <Grid size={3} sx={{ ...scrollViewComanStyle({ height: "85vh" }) }}>
+        <Grid size={3} sx={{
+          ...scrollViewComanStyle({ height: "85vh" }),
+          borderLeft: "2px solid cutromBorders.sideBorder"
+        }}>
           <List >
             <ListItem>
               <Typography sx={{ fontSize: "15px" }}>
@@ -409,7 +478,7 @@ export const Dashboard = () => {
 
       <div>
         <TgModal open={createProjectModal} setOpen={setCreateProjectModal}>
-          <Typography component="span" fontWeight="bold">Create New Project</Typography>
+          <Typography component="span" fontWeight="bold">Create New</Typography>
           <TextField
             label="Project Name"
             name="Project Name"
@@ -428,7 +497,7 @@ export const Dashboard = () => {
           >Create</Button>
         </TgModal>
       </div>
-    </Paper>
+    </Box>
 
   )
 }
