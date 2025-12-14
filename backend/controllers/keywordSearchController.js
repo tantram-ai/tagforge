@@ -2071,12 +2071,25 @@ const keywordSearch = async (req, res) => {
     ]
 
     try {
+        // --------------- DataForSEO ------------------
+
         const resp = await axios.post(process.env.KEYWORD_API_BASE, payload, {
             headers: { Authorization: `Basic ${process.env.KEYWORD_API_KEY}` }
         });
         if (resp?.data) {
             return fetchSuccess(res, resp?.data)
         }
+
+        //------------------Zenserp-----------------------
+
+        // const resp = await axios.post(process.env.ZENSERP_API_BASE, payload, {
+        //     headers: { Authorization: `Basic ${process.env.ZENSERP_API_KEY}` }
+        // });
+        // if (resp?.data) {
+        //     return fetchSuccess(res, resp?.data)
+        // }
+
+        //------------------Mock Data--------------------------
         // setTimeout(() => {
         //     return fetchSuccess(res, Keywordata)
         // }, 2000);
