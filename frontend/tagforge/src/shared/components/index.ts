@@ -1,3 +1,7 @@
+export { TgDifficultyIndicator } from "./tgDifficultyIdicator";
+export { TgMultiToggle } from "./tgMultiToggle";
+export { TgAutocomplete } from "./tgAutocomplete";
+export { TgSteper } from "./tgSteper";
 export { TgHtmlEditor } from "./tgHtmlEditor";
 export { TgSkeletonLoader } from "./tgSkeletonLoader";
 export { PremiumBadge } from "./premiumBadge";

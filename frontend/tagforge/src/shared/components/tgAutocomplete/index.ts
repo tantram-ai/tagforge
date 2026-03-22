@@ -1,0 +1,1 @@
+export { TgAutocomplete } from "./TgAutocomplete";

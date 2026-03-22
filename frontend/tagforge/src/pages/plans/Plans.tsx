@@ -104,7 +104,7 @@ export const Plans = () => {
 
 
   const setPlan = async (plan: any) => {
-    const payload:any=
+    const payload: any =
     {
       planId: plan?.planId,
       plan: plan?.name,
@@ -136,7 +136,7 @@ export const Plans = () => {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 6, marginTop:'5%'} }}>
+    <Box sx={{ p: { xs: 2, md: 6, marginTop: '5%' } }}>
       {/* 🔹 Hero Section */}
       <Box textAlign="center" sx={{ mb: 6 }}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>

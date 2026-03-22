@@ -3,10 +3,11 @@ const { keywordSuggestion,
     seoContentFunction,
     keywordFunction,
     keywordSchema,
-    handleKeywordsResponse,
+    // handleKeywordsResponse,
     seoContentSchema,
     keywordSuggestionSystemPrompt,
-    contentSystemPrompt } = require("../utils");
+    contentSystemPrompt,
+    parseOpenAIResponse } = require("../utils");
 const OpenAI = require("openai");
 
 const generate = async (req, res) => {
@@ -59,8 +60,8 @@ const generate = async (req, res) => {
             },
             tools: [contentFunction],
         });
+        const result = parseOpenAIResponse(completion)
 
-        const result = handleKeywordsResponse(completion);
         return result
 
     } catch (error) {

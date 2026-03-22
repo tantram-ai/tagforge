@@ -43,11 +43,17 @@ export const TgTextInput = ({
             onChange={onChange}
             fullWidth
             required={required}
-            variant="standard"
+            variant="outlined"
+            size='small'
             multiline={multiline}
             rows={rows}
             placeholder={placeholder}
             disabled={disabled}
+             sx={{
+                '& .MuiOutlinedInput-root': {
+                    borderRadius: 2, 
+                },
+            }}
         >
             {list?.length > 0 && list?.map((opt) => (
                 <MenuItem key={opt} value={opt}>

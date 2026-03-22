@@ -95,14 +95,17 @@ const generateContent = async (req, res) => {
 
         if (isProjectLimitValid) {
             const output = await generate(req, res)
-            let cleaned = output?.content[0]?.text?.content[0].text.replace(/```json|```/g, "").trim()
-            await setGeneratedContent(JSON.parse(cleaned), projectId)
+            // console.log(output, "output from generate function")
+            // let cleaned = output?.content[0]?.text?.content[0].text.replace(/```json|```/g, "").trim()
+            // await setGeneratedContent(JSON.parse(cleaned), projectId)
+            await setGeneratedContent(output, projectId)
             await setSuggestedKeyWords(JSON.stringify(selectedKeywords), projectId)
             await users.increment('generationCount', {
                 by: 1,
                 where: { uid }
             });
-            return fetchSuccess(res, JSON.parse(cleaned))
+            // return fetchSuccess(res, JSON.parse(cleaned))
+            return fetchSuccess(res, {...output,projectId})
         }
 
     } catch (error) {

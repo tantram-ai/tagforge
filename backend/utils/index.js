@@ -1,7 +1,8 @@
 const { contentPrompt, contentSystemPrompt } = require("./DynamicPrompts/contentPrompt");
 const { keywordSuggestion, keywordSuggestionSystemPrompt } = require("./DynamicPrompts/keywordSuggestion");
 const { cookieSettings } = require("./cookieSettings");
-const { handleKeywordsResponse } = require("./openAiResponseHandler");
+// const { handleKeywordsResponse } = require("./openAiResponseHandler");
+const { parseOpenAIResponse } = require("./openAiResponseHandler");
 const { internalServer,
     fetchSuccess,
     invelidToken,
@@ -26,7 +27,8 @@ module.exports = {
     keywordFunction,
     seoContentFunction,
     keywordSchema,
-    handleKeywordsResponse,
+    // handleKeywordsResponse,
+    parseOpenAIResponse,
     seoContentSchema,
     contentSystemPrompt,
     keywordSuggestionSystemPrompt
